@@ -1,0 +1,196 @@
+{
+  "clothes": [
+    {
+      "id": "eed91588-4704-4c56-bcc4-8b9dbf60da93",
+      "image_path": "data/user_clothes/eed91588-4704-4c56-bcc4-8b9dbf60da93.jpg",
+      "garment_type": "上衣",
+      "color_hex": "#19191a",
+      "color_name": "深灰色",
+      "occasions": [
+        "日常"
+      ],
+      "seasons": [
+        "秋"
+      ],
+      "tags": [
+        "卫衣"
+      ],
+      "uploaded_at": "2026-01-29T15:25:08.616089",
+      "auto_analyzed_type": "上衣",
+      "auto_analyzed_color": "深灰色",
+      "created_at": "2026-01-29T15:25:08.616089"
+    },
+    {
+      "id": "97904845-8c26-4e22-9355-b1bc8f73d02d",
+      "image_path": "data/user_clothes/97904845-8c26-4e22-9355-b1bc8f73d02d.jpg",
+      "garment_type": "裤子",
+      "color_hex": "#e4d4c2",
+      "color_name": "浅灰色",
+      "occasions": [
+        "日常"
+      ],
+      "seasons": [
+        "夏"
+      ],
+      "tags": [
+        "裤子"
+      ],
+      "uploaded_at": "2026-01-29T15:37:59.577835",
+      "auto_analyzed_type": "裤子",
+      "auto_analyzed_color": "浅灰色",
+      "auto_confidence": 0.42857142857142855,
+      "created_at": "2026-01-29T15:37:59.580656"
+    },
+    {
+      "id": "7ee1c6b3-5299-4df5-abfa-2e356f199a94",
+      "image_path": "data/user_clothes/7ee1c6b3-5299-4df5-abfa-2e356f199a94.jpg",
+      "garment_type": "裤子",
+      "color_hex": "#ffffff",
+      "color_name": "白色",
+      "occasions": [
+        "日常"
+      ],
+      "seasons": [
+        "秋"
+      ],
+      "tags": [
+        "运动裤"
+      ],
+      "uploaded_at": "2026-01-29T15:39:00.447694",
+      "auto_analyzed_type": "裤子",
+      "auto_analyzed_color": "白色",
+      "auto_confidence": 0.42857142857142855,
+      "created_at": "2026-01-29T15:39:00.453980"
+    },
+    {
+      "id": "f806ccb6-30e6-47cf-9d72-691434202a10",
+      "image_path": "data/user_clothes/f806ccb6-30e6-47cf-9d72-691434202a10.jpg",
+      "garment_type": "外套",
+      "color_hex": "#1c1e24",
+      "color_name": "灰蓝色",
+      "occasions": [
+        "日常"
+      ],
+      "seasons": [
+        "冬"
+      ],
+      "tags": [
+        "西装"
+      ],
+      "uploaded_at": "2026-01-29T15:41:45.417636",
+      "auto_analyzed_type": "裤子",
+      "auto_analyzed_color": "灰蓝色",
+      "auto_confidence": 0.3,
+      "created_at": "2026-01-29T15:41:45.420511"
+    },
+    {
+      "id": "61943a41-8cef-4305-bfdd-d67ad81f7214",
+      "image_path": "data/user_clothes/61943a41-8cef-4305-bfdd-d67ad81f7214.jpg",
+      "garment_type": "外套",
+      "color_hex": "#fffffe",
+      "color_name": "白色",
+      "occasions": [
+        "日常"
+      ],
+      "seasons": [
+        "冬"
+      ],
+      "tags": [
+        "羽绒服"
+      ],
+      "uploaded_at": "2026-01-29T15:42:36.787700",
+      "auto_analyzed_type": "上衣",
+      "auto_analyzed_color": "白色",
+      "auto_confidence": 0.4166666666666667,
+      "created_at": "2026-01-29T15:42:36.792280"
+    },
+    {
+      "id": "1a3a562c-0134-46da-89fc-04c199a627c1",
+      "image_path": "data/user_clothes/1a3a562c-0134-46da-89fc-04c199a627c1.jpg",
+      "garment_type": "外套",
+      "color_hex": "#fffffe",
+      "color_name": "白色",
+      "occasions": [
+        "日常"
+      ],
+      "seasons": [
+        "冬"
+      ],
+      "tags": [
+        "羽绒服"
+      ],
+      "uploaded_at": "2026-01-29T15:44:14.063021",
+      "auto_analyzed_type": "上衣",
+      "auto_analyzed_color": "灰色",
+      "auto_confidence": 0.4166666666666667,
+      "created_at": "2026-01-29T15:44:14.064239"
+    },
+    {
+      "id": "7184d54a-7dd8-48aa-bc06-cb81bae5f44f",
+      "image_path": "data/user_clothes/7184d54a-7dd8-48aa-bc06-cb81bae5f44f.jpg",
+      "garment_type": "外套",
+      "color_hex": "#e88484",
+      "color_name": "粉红色",
+      "occasions": [
+        "日常"
+      ],
+      "seasons": [
+        "春",
+        "夏",
+        "秋",
+        "冬"
+      ],
+      "tags": [
+        "羽绒服"
+      ],
+      "uploaded_at": "2026-01-29T15:44:57.112283",
+      "auto_analyzed_type": "上衣",
+      "auto_analyzed_color": "灰色",
+      "auto_confidence": 0.4166666666666667,
+      "created_at": "2026-01-29T15:44:57.113360"
+    },
+    {
+      "id": "d50426b4-2b1f-4a05-9537-66690ea6e9ff",
+      "image_path": "data/user_clothes/d50426b4-2b1f-4a05-9537-66690ea6e9ff.jpg",
+      "garment_type": "外套",
+      "color_hex": "#ea0e0e",
+      "color_name": "红色",
+      "occasions": [
+        "日常"
+      ],
+      "seasons": [
+        "冬"
+      ],
+      "tags": [
+        "羽绒服"
+      ],
+      "uploaded_at": "2026-01-29T15:45:35.015690",
+      "auto_analyzed_type": "上衣",
+      "auto_analyzed_color": "白色",
+      "auto_confidence": 0.4166666666666667,
+      "created_at": "2026-01-29T15:45:35.018254"
+    },
+    {
+      "id": "7affa1b0-e02f-44b6-9899-dcefeebe05d5",
+      "image_path": "data/user_clothes/7affa1b0-e02f-44b6-9899-dcefeebe05d5.jpg",
+      "garment_type": "外套",
+      "color_hex": "#222b3d",
+      "color_name": "灰蓝色",
+      "occasions": [
+        "日常"
+      ],
+      "seasons": [
+        "秋"
+      ],
+      "tags": [
+        "夹克衫"
+      ],
+      "uploaded_at": "2026-01-29T23:35:59.925647",
+      "auto_analyzed_type": "裤子",
+      "auto_analyzed_color": "灰蓝色",
+      "auto_confidence": 0.42857142857142855,
+      "created_at": "2026-01-29T23:35:59.928784"
+    }
+  ],
+  "next_id": 1
+}

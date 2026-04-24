@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#222"/>
+  <rect x="20" y="20" width="760" height="410" fill="#333" stroke="#555"/>
+  <text x="400" y="225" font-size="24" text-anchor="middle" fill="#999">图片占位</text>
+</svg>

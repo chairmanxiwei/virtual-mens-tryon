@@ -1,0 +1,89 @@
+{
+  "user_model": {
+    "type": "threejs_3d",
+    "image_size": [
+      400,
+      600
+    ],
+    "quality": "high",
+    "geometry": "human",
+    "material": "standard",
+    "textures": {
+      "enabled": true,
+      "quality": "高"
+    },
+    "lighting": "默认",
+    "background": "纯色",
+    "threejs_config": {
+      "enable_animation": true,
+      "enable_shadows": true,
+      "enable_pbr": true,
+      "enable_interaction": true
+    }
+  },
+  "clothing_model": {
+    "type": "threejs_3d",
+    "image_size": [
+      300,
+      400
+    ],
+    "quality": "high",
+    "geometry": "human",
+    "material": "standard",
+    "textures": {
+      "enabled": true,
+      "quality": "高"
+    },
+    "lighting": "默认",
+    "background": "纯色",
+    "threejs_config": {
+      "enable_animation": true,
+      "enable_shadows": true,
+      "enable_pbr": true,
+      "enable_interaction": true
+    }
+  },
+  "camera": {
+    "position": [
+      0,
+      87.5,
+      200
+    ],
+    "target": [
+      0,
+      87.5,
+      0
+    ],
+    "fov": 45
+  },
+  "lights": [
+    {
+      "type": "ambient",
+      "color": "#ffffff",
+      "intensity": 0.6
+    },
+    {
+      "type": "directional",
+      "color": "#ffffff",
+      "intensity": 0.8,
+      "position": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "environment": {
+    "type": "studio",
+    "background": "#f0f2f6",
+    "lighting": "默认"
+  },
+  "tryon_params": {
+    "quality": "高精度",
+    "fit_style": "标准",
+    "fit_adjustment": 1.0,
+    "render_quality": "高",
+    "show_details": true,
+    "mode": "高级3D试穿 (真实)"
+  }
+}

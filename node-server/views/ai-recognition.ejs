@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/elite-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <div class="container">
+                <h1>
+                    <i class="fas fa-wardrobe"></i> 虚拟男装系统
+                </h1>
+                <nav class="nav-menu">
+                    <a href="/dashboard">
+                        <i class="fas fa-home"></i> 首页
+                    </a>
+                    <a href="/wardrobe">
+                        <i class="fas fa-wardrobe"></i> 我的衣橱
+                    </a>
+                    <a href="/ai-outfit">
+                        <i class="fas fa-magic"></i> AI搭配
+                    </a>
+                    <a href="/virtual-tryon">
+                        <i class="fas fa-vr-cardboard"></i> 虚拟试穿
+                    </a>
+                    <a href="/ai-recognition" class="active">
+                        <i class="fas fa-eye"></i> AI识别
+                    </a>
+                </nav>
+                <div class="user-info">
+                    <div class="user-details">
+                        <span><%= user.username %></span>
+                        <span><%= user.email %></span>
+                    </div>
+                    <div class="user-avatar">
+                        <%= user.username.charAt(0).toUpperCase() %>
+                    </div>
+                    <a href="/logout" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i> 登出
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="ai-recognition-container">
+                <div class="ai-recognition-hero">
+                    <h1><i class="fas fa-eye"></i> AI智能识别</h1>
+                    <p>使用摄像头或上传照片进行人脸检测和服装识别</p>
+                </div>
+                
+                <div class="recognition-grid">
+                    <div class="recognition-panel">
+                        <h2><i class="fas fa-camera"></i> 图像采集</h2>
+                        <p>使用摄像头拍摄或上传照片，系统将自动进行人脸检测和服装识别。</p>
+                        
+                        <div class="camera-container" id="camera-container">
+                            <video id="camera-feed" autoplay playsinline style="display: none;"></video>
+                            <canvas id="canvas" style="display: none;"></canvas>
+                            <div class="upload-zone" id="upload-zone">
+                                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>点击或拖拽文件到此处上传</p>
+                                <p>或</p>
+                                <p>使用摄像头拍摄</p>
+                                <small>支持 JPEG, PNG 格式，最大 5MB</small>
+                            </div>
+                        </div>
+                        
+                        <div class="controls">
+                            <button id="start-camera" class="control-btn">
+                                <i class="fas fa-video"></i> 启动摄像头
+                            </button>
+                            <button id="capture-photo" class="control-btn primary" disabled>
+                                <i class="fas fa-camera"></i> 拍摄照片
+                            </button>
+                            <button id="upload-image" class="control-btn">
+                                <i class="fas fa-upload"></i> 上传图片
+                            </button>
+                            <button id="reset-camera" class="control-btn">
+                                <i class="fas fa-redo"></i> 重置
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="recognition-panel">
+                        <h2><i class="fas fa-brain"></i> 识别结果</h2>
+                        <p>系统将自动分析图像，检测人脸并识别服装信息。</p>
+                        
+                        <div class="result-container">
+                            <h3><i class="fas fa-user"></i> 人脸检测</h3>
+                            <div id="face-detection-result" class="recognition-result">
+                                <div class="result-item">
+                                    <p>请拍摄或上传照片以开始识别</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="result-container">
+                            <h3><i class="fas fa-tshirt"></i> 服装识别</h3>
+                            <div id="clothing-recognition-result" class="recognition-result">
+                                <div class="result-item">
+                                    <p>请拍摄或上传照片以开始识别</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="controls">
+                            <button id="analyze-image" class="control-btn primary" disabled>
+                                <i class="fas fa-brain"></i> 分析图像
+                            </button>
+                            <button id="try-on" class="control-btn" disabled>
+                                <i class="fas fa-vr-cardboard"></i> 虚拟试穿
+                            </button>
+                            <button id="save-result" class="control-btn">
+                                <i class="fas fa-save"></i> 保存结果
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <% if (recognitionResult) { %>
+                <div class="success-message">
+                    <h4><i class="fas fa-check-circle"></i> 识别成功！</h4>
+                    <p>人脸检测：<%= recognitionResult.faceDetection ? '成功' : '失败' %></p>
+                    <p>服装识别：<%= recognitionResult.clothingRecognition ? '成功' : '失败' %></p>
+                    <% if (recognitionResult.clothingItems && recognitionResult.clothingItems.length > 0) { %>
+                    <p>识别到的服装：<%= recognitionResult.clothingItems.map(item => item.type).join(', ') %></p>
+                    <% } %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/artistic-animations.js"></script>
+    <script src="/js/ai-recognition.js" defer></script>
+</body>
+</html>

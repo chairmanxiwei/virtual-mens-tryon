@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/renaissance-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 高德地图 JS API -->
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+    <% if (amapJsApiKey) { %>
+    <script src="https://webapi.amap.com/maps?v=2.0&key=<%= amapJsApiKey %>"></script>
+    <% } %>
+    <script src="https://webapi.amap.com/ui/1.1/main.js"></script>
+    <style>
+        .ai-agent-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .ai-agent-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .ai-agent-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        .input-section {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border: 1px solid var(--accent-gold);
+            border-radius: 8px;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(240,240,240,0.2);
+            color: var(--text-color);
+            border-radius: 4px;
+        }
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .ai-agent-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .recommendations-section {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border: 1px solid var(--accent-gold);
+            border-radius: 8px;
+        }
+        .recommendation-card {
+            background: rgba(0,0,0,0.3);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(240,240,240,0.1);
+            border-radius: 8px;
+        }
+        .recommendation-card h4 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+        .recommendation-items {
+            margin-top: 1rem;
+        }
+        .recommendation-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .recommendation-item i {
+            color: var(--accent-gold);
+            margin-right: 0.5rem;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(212,175,55,0.3);
+            border-top: 5px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            background: rgba(255,0,0,0.1);
+            border: 1px solid #f44336;
+            color: #f44336;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        .success-message {
+            background: rgba(0,255,0,0.1);
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+        .health-status {
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+        }
+        .health-status.healthy {
+            background: rgba(0,255,0,0.1);
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+        }
+        .health-status.unhealthy {
+            background: rgba(255,0,0,0.1);
+            border: 1px solid #f44336;
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav class="nav-overlay">
+        <div class="brand">虚拟男装</div>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-item">首页</a>
+            <a href="/wardrobe" class="nav-item">衣橱</a>
+            <a href="/ai-outfit" class="nav-item">AI搭配</a>
+            <a href="/virtual-tryon" class="nav-item">虚拟试穿</a>
+            <a href="/admin/outfits" class="nav-item">管理</a>
+            <a href="/logout" class="nav-item">登出</a>
+        </div>
+    </nav>
+
+    <section>
+        <div class="ai-agent-container">
+            <div class="ai-agent-header">
+                <h1 class="hero-title reveal-text">
+                    <span>AI 搭配推荐</span>
+                </h1>
+                <p class="hero-subtitle">智能分析，为您生成完美的搭配方案</p>
+            </div>
+
+            <% if (healthStatus) { %>
+                <div class="health-status healthy">
+                    <i class="fas fa-check-circle"></i> AI 服务运行正常
+                </div>
+            <% } else { %>
+                <div class="health-status unhealthy">
+                    <i class="fas fa-exclamation-circle"></i> AI 服务未运行，请启动 Python 服务
+                </div>
+            <% } %>
+
+            <div class="ai-agent-grid">
+                <!-- 左侧：输入区域 -->
+                <div class="input-section">
+                    <h3 style="color: var(--accent-gold); margin-bottom: 2rem;">搭配需求</h3>
+                    
+                    <form id="ai-agent-form">
+                        <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+                        
+                        <div class="input-group">
+                            <label for="occasion">场合</label>
+                            <select id="occasion" name="occasion" required>
+                                <option value="商务会议">商务会议</option>
+                                <option value="休闲聚会">休闲聚会</option>
+                                <option value="正式晚宴">正式晚宴</option>
+                                <option value="日常通勤">日常通勤</option>
+                                <option value="运动健身">运动健身</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="style">风格偏好</label>
+                            <select id="style" name="style" required>
+                                <option value="商务正式">商务正式</option>
+                                <option value="休闲时尚">休闲时尚</option>
+                                <option value="街头潮流">街头潮流</option>
+                                <option value="经典优雅">经典优雅</option>
+                                <option value="运动休闲">运动休闲</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="purpose">今日目的</label>
+                            <input type="text" id="purpose" name="purpose" placeholder="例如：商务会议/朋友聚会/校园活动">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="scene">场景描述</label>
+                            <textarea id="scene" name="scene" placeholder="例如：室内/户外，正式/休闲，温度等"></textarea>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="temperature">温度 (°C)</label>
+                            <input type="number" id="temperature" name="temperature" placeholder="例如：25">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="weather">天气状况</label>
+                            <select id="weather" name="weather">
+                                <option value="">请选择</option>
+                                <option value="晴天">晴天</option>
+                                <option value="多云">多云</option>
+                                <option value="阴天">阴天</option>
+                                <option value="雨天">雨天</option>
+                                <option value="雪天">雪天</option>
+                            </select>
+                        </div>
+                        
+                        <div class="ai-agent-actions">
+                            <button type="submit" class="btn btn-primary" id="generate-btn">
+                                <i class="fas fa-magic"></i> 生成推荐
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="refresh-btn">
+                                <i class="fas fa-refresh"></i> 换一批
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 右侧：推荐结果区域 -->
+                <div class="recommendations-section">
+                    <h3 style="color: var(--accent-gold); margin-bottom: 2rem;">推荐结果</h3>
+                    
+                    <div id="recommendations-container">
+                        <div style="text-align: center; color: rgba(240,240,240,0.5);">
+                            <i class="fas fa-lightbulb" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                            <p>点击生成推荐按钮获取 AI 搭配建议</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 加载动画 -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p style="color: var(--accent-gold); margin-top: 1rem;">AI 正在分析...请稍候</p>
+    </div>
+
+    <!-- 传递 CSRF 令牌到前端 -->
+    <script>
+        window.csrfToken = '<%= csrfToken %>';
+    </script>
+
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="/js/artistic-animations.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/advanced-script.js"></script>
+    <script src="/js/ai-agent.js" defer></script>
+</body>
+</html>

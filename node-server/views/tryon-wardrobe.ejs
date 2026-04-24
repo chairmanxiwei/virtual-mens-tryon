@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>选择衣物</title>
+  <link rel="stylesheet" href="/css/renaissance-style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body { padding: 1rem 1.2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
+    .card { border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; background: rgba(255,255,255,0.02); }
+    .card img { width: 100%; height: 120px; object-fit: cover; border-bottom: 1px solid rgba(212,175,55,0.2); }
+    .card .meta { padding: 0.5rem; }
+    .card h4 { margin: 0; font-size: 0.95rem; color: #fff; }
+    .card p { margin: 0.25rem 0; font-size: 0.75rem; color: rgba(240,240,240,0.8); }
+    .card button { width: 100%; }
+  </style>
+</head>
+<body>
+  <h3 style="color:#fff; margin-bottom: 1rem;">从衣橱选择衣物</h3>
+  <div class="grid">
+    <% if (clothes && clothes.length) { %>
+      <% clothes.forEach(function(c){ %>
+        <div class="card">
+          <img src="<%= c.image %>" alt="<%= c.name %>" onerror="this.src='/img/placeholder.svg'">
+          <div class="meta">
+            <h4><%= c.name %></h4>
+            <p><%= c.color %> · <%= c.type %></p>
+            <button class="btn btn-secondary" onclick="chooseCloth(<%= c.id %>,'<%= c.image %>')">选择</button>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p style="color: rgba(240,240,240,0.6);">你的衣橱为空，请先去「衣橱」上传衣物。</p>
+    <% } %>
+  </div>
+  <script>
+    function chooseCloth(id, image) {
+      try {
+        window.opener.postMessage({ type: 'choose-cloth', id: id, image: image }, window.location.origin);
+        window.close();
+      } catch(e) {}
+    }
+  </script>
+</body>
+</html>

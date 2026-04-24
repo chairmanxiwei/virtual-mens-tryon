@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+  <% include partials/header.ejs %>
+  
+  <main>
+    <section class="about">
+      <h1><%= title %></h1>
+      <p><%= description %></p>
+      
+      <div class="about-content">
+        <h2>技术栈</h2>
+        <ul class="tech-stack">
+          <li>Node.js</li>
+          <li>Express</li>
+          <li>EJS</li>
+          <li>CSS3</li>
+          <li>JavaScript (ES6+)</li>
+          <li>可选：React、Vue.js、Bootstrap</li>
+        </ul>
+        
+        <h2>系统要求</h2>
+        <ul class="requirements">
+          <li>Node.js 14.0+</li>
+          <li>npm 6.0+</li>
+          <li>支持ES6+的现代浏览器</li>
+        </ul>
+        
+        <h2>安装指南</h2>
+        <pre class="code-block">
+# 安装核心依赖
+npm install express ejs nodemon
+
+# 启动开发服务器
+npm run dev
+        </pre>
+      </div>
+    </section>
+  </main>
+  
+  <% include partials/footer.ejs %>
+  <script src="/public/js/main.js"></script>
+</body>
+</html>

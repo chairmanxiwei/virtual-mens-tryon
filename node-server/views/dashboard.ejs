@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/renaissance-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav class="nav-overlay">
+        <div class="brand">虚拟男装</div>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-item">首页</a>
+            <a href="/wardrobe" class="nav-item">衣橱</a>
+            <a href="/ai-outfit" class="nav-item">AI搭配</a>
+            <a href="/virtual-tryon" class="nav-item">虚拟试穿</a>
+            <a href="/dashboard/edit" class="nav-item">首页配置</a>
+            <a href="/logout" class="nav-item">登出</a>
+        </div>
+    </nav>
+
+    <!-- 使用配置的背景图，添加时间戳防止缓存 -->
+    <% const v = Date.now(); %>
+    <section class="hero" style="background-image: url('<%= homeContent.heroImage %>?v=<%= v %>'); background-size: cover; background-position: center;">
+        <div class="hero-bg-text">绅士风度</div>
+        <h1 class="hero-title reveal-text">
+            <span><%= homeContent.title %></span><br>
+            <span><%= homeContent.subtitle %></span>
+        </h1>
+        <p class="hero-subtitle">
+            <%= homeContent.description %>
+        </p>
+    </section>
+
+    <section class="gallery">
+        <div class="gallery-header">
+            <h2>私人藏馆</h2>
+            <p>探索您的数字时尚工具。</p>
+        </div>
+        <div class="gallery-grid">
+            <% if (homeContent.gallery && homeContent.gallery.length > 0) { %>
+                <% homeContent.gallery.forEach(item => { %>
+                    <a href="<%= item.id === 1 ? '/wardrobe' : (item.id === 2 ? '/ai-outfit' : '/virtual-tryon') %>" class="art-card">
+                        <img src="<%= item.image %>?v=<%= v %>" class="art-card-image">
+                        <div class="art-card-content">
+                            <h3><%= item.title %></h3>
+                            <p><%= item.description %></p>
+                        </div>
+                    </a>
+                <% }); %>
+            <% } else { %>
+                <a href="/wardrobe" class="art-card">
+                    <img src="/img/wardrobe.jpg" class="art-card-image">
+                    <div class="art-card-content"><h3>私人衣橱</h3><p>管理您的数字时尚收藏</p></div>
+                </a>
+                <a href="/ai-outfit" class="art-card">
+                    <img src="/img/ai-outfit.jpg" class="art-card-image">
+                    <div class="art-card-content"><h3>AI 造型师</h3><p>智能生成搭配方案</p></div>
+                </a>
+                <a href="/virtual-tryon" class="art-card">
+                    <img src="/img/virtual-tryon.jpg" class="art-card-image">
+                    <div class="art-card-content"><h3>虚拟试穿</h3><p>沉浸式 AI 试穿体验</p></div>
+                </a>
+            <% } %>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="/js/artistic-animations.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

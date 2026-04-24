@@ -1,0 +1,26 @@
+{
+  "title": "虚拟男装",
+  "subtitle": "风格的艺术",
+  "description": "经典风格与数字艺术的邂逅，为您打造独一无二的虚拟绅士形象。",
+  "heroImage": "/img/hero-bg.jpg",
+  "gallery": [
+    {
+      "id": 1,
+      "title": "私人衣橱",
+      "description": "管理您的数字时尚收藏",
+      "image": "/img/wardrobe.jpg"
+    },
+    {
+      "id": 2,
+      "title": "AI 造型师",
+      "description": "智能生成完美搭配方案",
+      "image": "/uploads/home/gallery_1__image_-1773665569152.jpg"
+    },
+    {
+      "id": 3,
+      "title": "数字画布",
+      "description": "沉浸式 3D 试穿体验",
+      "image": "/uploads/home/gallery-1773659934786.jpg"
+    }
+  ]
+}

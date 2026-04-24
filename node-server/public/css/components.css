@@ -1,0 +1,30 @@
+/* 组件样式文件 - 迁移自内联样式 */
+
+/* 虚拟试穿页面样式 */
+.tryon-panel {
+    position: relative;
+}
+
+.tryon-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.tryon-panel-title {
+    color: var(--accent-gold);
+}
+
+.tryon-panel-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tryon-panel-controls .btn {
+    padding: 0.5rem;
+}
+
+#3d-container {
+    border: 1px solid rgba(240, 240, 240, 0.1);
+}

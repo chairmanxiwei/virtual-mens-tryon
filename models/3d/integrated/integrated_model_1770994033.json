@@ -1,0 +1,41 @@
+{
+  "success": true,
+  "method": "integrated_3d_modeling",
+  "processing_time": 1770994033.8966596,
+  "components": {
+    "pose_detection": null,
+    "human_model": null,
+    "advanced_model": {
+      "success": true,
+      "model_data": {
+        "type": "threejs_3d",
+        "image_size": [
+          400,
+          600
+        ],
+        "quality": "high",
+        "geometry": "human",
+        "material": "standard",
+        "textures": {
+          "enabled": true,
+          "quality": "高"
+        },
+        "lighting": "默认",
+        "background": "纯色",
+        "threejs_config": {
+          "enable_animation": true,
+          "enable_shadows": true,
+          "enable_pbr": true,
+          "enable_interaction": true
+        }
+      },
+      "method": "threejs",
+      "quality": "high",
+      "processing_time": "1.2s",
+      "frontend_ready": true,
+      "message": "使用Three.js纯前端3D建模（稳定可靠）",
+      "modeling_method": "external_api",
+      "quality_level": "high"
+    }
+  }
+}

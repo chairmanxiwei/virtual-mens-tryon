@@ -1,0 +1,50 @@
+<footer>
+  <div class="footer-content">
+    <div class="footer-info">
+      <h3>前端设计Skill</h3>
+      <p>强大的前端开发工具，为您提供专业的前端设计解决方案</p>
+    </div>
+    <div class="footer-contact">
+      <h4>联系我们</h4>
+      <p>邮箱: contact@frontend-skill.com</p>
+      <p>电话: 123-456-7890</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; <%= new Date().getFullYear() %> 前端设计Skill. 保留所有权利.</p>
+  </div>
+</footer>
+<style>
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .footer-info,
+  .footer-contact {
+    flex: 1;
+    margin: 0 1rem;
+  }
+  
+  .footer-bottom {
+    text-align: center;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin-top: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column;
+      gap: 2rem;
+    }
+    
+    .footer-info,
+    .footer-contact {
+      margin: 0;
+    }
+  }
+</style>

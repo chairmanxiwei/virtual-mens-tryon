@@ -1,0 +1,7 @@
+option batch abort
+option confirm off
+open sftp://%WINSCP_USER%:%WINSCP_PASS%@%WINSCP_HOST%:%WINSCP_PORT%
+mkdir /root/虚拟男装
+cd /root/虚拟男装
+put -r "D:\Pycharm\虚拟男装\*"
+exit

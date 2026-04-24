@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/renaissance-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 高德地图 JS API -->
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+    <% if (amapJsApiKey) { %>
+    <script src="https://webapi.amap.com/maps?v=2.0&key=<%= amapJsApiKey %>"></script>
+    <% } %>
+    <script src="https://webapi.amap.com/ui/1.1/main.js"></script>
+    <!-- CDN 资源 -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        .ai-outfit-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-title h2 {
+            font-size: 3.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: rgba(240, 240, 240, 0.6);
+            font-style: italic;
+        }
+        
+        .weather-section {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .weather-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .weather-input input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background-color: #0f0f0f;
+            border: 1px solid #444444;
+            color: #ffffff;
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            height: 60px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        
+        .weather-input input::placeholder {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .weather-input input:focus, .weather-input input:hover {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .weather-result {
+            margin-top: 1.5rem;
+            padding: 20px;
+            background-color: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .weather-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .weather-temp {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        
+        .weather-details {
+            flex: 1;
+        }
+        
+        .weather-details p {
+            font-size: 16px;
+            color: #e0e0e0;
+            margin: 5px 0;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
+            height: 60px;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
+        
+
+        
+        .recommend-section {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .recommend-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-body);
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            position: relative;
+            padding-left: 1.2rem;
+        }
+        
+        label::before {
+            content: "●";
+            color: #ffd700;
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 12px;
+        }
+        
+        select {
+            width: 100%;
+            padding: 1.2rem 1rem;
+            background-color: #0f0f0f !important;
+            border: 1px solid #444444;
+            color: #ffffff !important;
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            height: 60px;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23ffffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px;
+            z-index: 1000;
+            position: relative;
+            overflow: visible;
+        }
+        
+        select:focus, select:hover {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        select option {
+            background-color: #222222;
+            color: #ffffff;
+        }
+        
+        select:focus {
+            color: #ffffff !important;
+        }
+        
+        select option:checked {
+            background-color: #007bff !important;
+            color: #ffffff !important;
+        }
+        
+        .recommend-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            background-color: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .recommend-result h4 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+        
+        .reason-section {
+            margin-top: 2rem;
+        }
+        
+        .reason-section h4 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+        
+        .reason-section p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #f0f0f0;
+        }
+
+        .outfit-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .outfit-card {
+            border: 1px solid rgba(240,240,240,0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(10,10,10,0.6);
+        }
+
+        .outfit-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .outfit-card .meta {
+            padding: 0.8rem 0.9rem;
+        }
+
+        .outfit-card .name {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .outfit-card .sub {
+            color: rgba(240,240,240,0.7);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 900px) {
+            .outfit-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 560px) {
+            .outfit-cards { grid-template-columns: 1fr; }
+        }
+        
+        .missing-items {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(114, 47, 55, 0.1);
+            border: 1px solid rgba(114, 47, 55, 0.3);
+        }
+        
+        .missing-items h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-red);
+        }
+        
+        .missing-items p {
+            color: var(--text-color);
+        }
+
+        .outfits-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+        }
+
+        .outfit-plan {
+            border: 1px solid rgba(212, 175, 55, 0.12);
+            border-radius: 12px;
+            background: rgba(10,10,10,0.55);
+            overflow: hidden;
+        }
+
+        .outfit-plan-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.1rem;
+            background: rgba(212, 175, 55, 0.06);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+        }
+
+        .outfit-plan-title {
+            color: #ffd700;
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .outfit-plan-body {
+            padding: 1rem 1.1rem 1.2rem;
+        }
+
+        .outfit-plan-reason {
+            color: rgba(240,240,240,0.9);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin: 0.6rem 0 0.8rem;
+            white-space: pre-wrap;
+        }
+
+        .outfit-plan-actions {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .outfit-tryon-btn {
+            border-color: rgba(212, 175, 55, 0.6);
+        }
+
+        .missing-type-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .missing-type-card {
+            border: 1px solid rgba(240,240,240,0.12);
+            border-radius: 12px;
+            background: rgba(10,10,10,0.55);
+            overflow: hidden;
+        }
+
+        .missing-type-card .head {
+            padding: 0.75rem 0.85rem;
+            background: rgba(114, 47, 55, 0.12);
+            border-bottom: 1px solid rgba(114, 47, 55, 0.22);
+            color: var(--accent-red);
+            font-weight: 800;
+        }
+
+        .missing-type-card .body {
+            padding: 0.85rem;
+        }
+
+        .missing-type-card .example {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .missing-type-card .reason {
+            color: rgba(240,240,240,0.78);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.7rem;
+        }
+
+        .missing-type-card .links a {
+            display: inline-block;
+            color: rgba(212, 175, 55, 0.9);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .missing-type-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 560px) {
+            .missing-type-cards { grid-template-columns: 1fr; }
+        }
+
+        .missing-products {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .missing-product {
+            border: 1px solid rgba(240,240,240,0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(10,10,10,0.6);
+        }
+
+        .missing-product a {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .missing-product img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .missing-product .meta {
+            padding: 0.8rem 0.9rem;
+        }
+
+        .missing-product .name {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .missing-product .sub {
+            color: rgba(240,240,240,0.7);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 900px) {
+            .missing-products { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 560px) {
+            .missing-products { grid-template-columns: 1fr; }
+        }
+        
+        .tryon-section {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 2rem;
+        }
+        
+        .tryon-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .upload-zone {
+            border: 1px dashed rgba(240, 240, 240, 0.3);
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+        
+        .upload-zone h4 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-zone:hover {
+            border-color: var(--accent-gold);
+        }
+        
+        .upload-zone input[type="file"] {
+            display: none;
+        }
+        
+        .tryon-result {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .tryon-result img {
+            max-width: 100%;
+            max-height: 500px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            color: var(--accent-gold);
+        }
+        
+        .error {
+            color: var(--accent-red);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="custom-cursor-enabled">
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav class="nav-overlay">
+        <div class="brand">虚拟男装</div>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-item">首页</a>
+            <a href="/wardrobe" class="nav-item">衣橱</a>
+            <a href="/ai-outfit" class="nav-item active">AI搭配</a>
+            <a href="/virtual-tryon" class="nav-item">虚拟试穿</a>
+            <a href="/admin/outfits" class="nav-item">管理</a>   
+            <a href="/logout" class="nav-item">登出</a>
+        </div>
+    </nav>
+    
+    <div class="ai-outfit-container">
+        <div class="hero" style="min-height: 30vh; padding-top: 10vh;">
+            <h1 class="hero-title reveal-text">
+                <span>AI 穿搭推荐</span>
+            </h1>
+            <p class="hero-subtitle">根据天气、场景和个人风格，为您推荐最合适的穿搭方案</p>
+        </div>
+        
+        <!-- 天气查询部分 -->
+        <div class="weather-section">
+            <h3>天气查询</h3>
+            <div class="weather-input">
+                <input type="text" id="location-input" placeholder="请输入所在地，如：北京市朝阳区">
+                <button class="btn btn-primary" id="weather-btn">查询天气</button>
+            </div>
+            <div id="weather-result" class="weather-result" style="display: none;">
+                <div class="weather-info">
+                    <div class="weather-temp" id="weather-temp">--°C</div>
+                    <div class="weather-details">
+                        <p id="weather-type">--</p>
+                        <p id="weather-wind">风速：--</p>
+                        <p id="weather-humidity">湿度：--</p>
+                    </div>
+                </div>
+            </div>
+            <div id="weather-error" class="error" style="display: none;"></div>
+        </div>
+        
+
+        
+        <!-- 穿搭推荐部分 -->
+        <div class="recommend-section">
+            <h3>穿搭推荐</h3>
+            <div class="outfit-row"> 
+              <div class="outfit-field"> 
+                <label class="field-label">场景</label> 
+                <select id="scene-select" class="outfit-select"> 
+                  <option value="日常通勤">日常通勤</option> 
+                  <option value="商务会议">商务会议</option> 
+                  <option value="周末休闲">周末休闲</option> 
+                  <option value="运动健身">运动健身</option> 
+                  <option value="约会出行">约会出行</option> 
+                  <option value="朋友聚会">朋友聚会</option> 
+                  <option value="正式晚宴">正式晚宴</option> 
+                  <option value="户外出行">户外出行</option> 
+                </select> 
+              </div> 
+              <div class="outfit-field"> 
+                <label class="field-label">目的</label> 
+                <select id="purpose-select" class="outfit-select"> 
+                  <option value="日常办公">日常办公</option> 
+                  <option value="商务会议">商务会议</option> 
+                  <option value="休闲聚会">休闲聚会</option> 
+                  <option value="运动健身">运动健身</option> 
+                  <option value="约会出行">约会出行</option> 
+                </select> 
+              </div> 
+              <div class="outfit-field"> 
+                <label class="field-label">风格偏好</label> 
+                <select id="style-select" class="outfit-select"> 
+                  <option value="简约">简约</option> 
+                  <option value="复古">复古</option> 
+                  <option value="街头">街头</option> 
+                  <option value="日系">日系</option> 
+                  <option value="美式">美式</option> 
+                  <option value="韩系">韩系</option> 
+                </select> 
+              </div> 
+            </div>
+            <button class="btn btn-primary" id="recommend-btn">生成推荐</button>
+            <div id="recommend-loading" class="loading" style="display: none;">生成中...</div>
+            <div id="recommend-result" class="recommend-result" style="display: none;">
+                <div id="outfits-container" class="outfits-container"></div>
+                <div id="missing-items" class="missing-items" style="display: none;">
+                    <h4>需补充</h4>
+                    <p id="missing-text"></p>
+                    <div id="missing-type-cards" class="missing-type-cards"></div>
+                    <div id="missing-products" class="missing-products"></div>
+                </div>
+            </div>
+            <div id="recommend-error" class="error" style="display: none;"></div>
+        </div>
+        
+        <!-- 虚拟试衣部分 -->
+        <div class="tryon-section">
+            <h3>虚拟试衣</h3>
+            <div class="tryon-form">
+                <div class="upload-zone">
+                    <h4>上传人物照片</h4>
+                    <input type="file" id="person-image" accept="image/*">
+                    <button class="btn btn-secondary" id="select-person">选择照片</button>
+                    <div id="person-preview" style="margin-top: 1rem;"></div>
+                </div>
+                <div class="upload-zone">
+                    <h4>自主选择衣服</h4>
+                    <select id="garment-select">
+                        <option value="">请选择衣服</option>
+                    </select>
+                    <div id="garment-preview" style="margin-top: 1rem;"></div>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="start-tryon">开始试衣</button>
+            <button class="btn btn-secondary" id="cancel-tryon" style="display: none; margin-left: 0.5rem;">取消</button>
+            <div id="tryon-loading" class="loading" style="display: none;">生成中...</div>
+            <div id="tryon-result" class="tryon-result" style="display: none;">
+                <h4>试衣效果</h4>
+                <img id="tryon-image" src="" alt="试衣效果">
+                <button class="btn btn-secondary" id="download-tryon" style="margin-top: 1rem;">下载图片</button>
+            </div>
+            <div id="tryon-error" class="error" style="display: none;"></div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = (window.AI_API_BASE || window.location.origin).replace(/\/+$/, '');
+        let weatherData = null;
+        let wardrobeData = [];
+        let recommendData = null;
+        let tryonAbortController = null;
+        let tryonCancelRequested = false;
+        let tryonCurrentTaskId = '';
+        console.log('API_BASE:', API_BASE);
+        
+        // 页面加载后自动静默加载衣橱数据（无感知）
+        window.addEventListener('DOMContentLoaded', async function() {
+            const fetchWithRetry = async (url, options, retries = 3, delay = 1000) => {
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        const response = await fetch(url, options);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return await response.json();
+                    } catch (error) {
+                        console.warn(`衣橱数据加载失败 (${i + 1}/${retries})`, error.message);
+                        if (i < retries - 1) {
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                        } else {
+                            throw error;
+                        }
+                    }
+                }
+            };
+
+            try {
+                const result = await fetchWithRetry(`${API_BASE}/api/wardrobe/clothes`, { credentials: 'include' });
+                if (result && result.success && Array.isArray(result.data)) {
+                    wardrobeData = result.data;
+                    populateGarmentSelect(); // 为试衣环节准备衣服列表
+                    console.log('衣橱数据加载成功:', wardrobeData.length, '件衣服');
+                } else {
+                    wardrobeData = [];
+                    console.error('衣橱数据格式错误：', result);
+                }
+            } catch (error) {
+                console.error('衣橱数据自动加载异常:', error);
+                // 加载失败时显示友好提示
+                showTopNotice('衣橱数据加载失败，部分功能可能受限');
+            }
+        });
+
+        // 天气查询
+        document.getElementById('weather-btn').addEventListener('click', async function() {
+            const location = document.getElementById('location-input').value.trim();
+            if (!location) {
+                document.getElementById('weather-error').textContent = '请输入所在地';
+                document.getElementById('weather-error').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('weather-error').style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/weather/query`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ address: location })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                if (result.success) {
+                    weatherData = result.data;
+                    document.getElementById('weather-temp').textContent = `${weatherData.temperature || '--'}°C`;
+                    document.getElementById('weather-type').textContent = `天气：${weatherData.weather || weatherData.weather_type || '--'}`;
+                    document.getElementById('weather-wind').textContent = `风速：${weatherData.wind || weatherData.wind_speed || '--'}`;
+                    document.getElementById('weather-humidity').textContent = `湿度：${weatherData.humidity || '--'}%`;
+                    document.getElementById('weather-result').style.display = 'block';
+                    console.log('天气查询成功:', weatherData);
+                } else {
+                    document.getElementById('weather-error').textContent = result.message || '天气查询失败，请检查后端服务';
+                    document.getElementById('weather-error').style.display = 'block';
+                    console.error('天气查询失败:', result.message);
+                }
+            } catch (error) {
+                document.getElementById('weather-error').textContent = '天气查询失败：后端服务未启动，请检查 Python 服务';
+                document.getElementById('weather-error').style.display = 'block';
+                console.error('天气查询异常:', error);
+            }
+        });
+        
+        // 填充衣服选择下拉框（试衣环节用）
+        function populateGarmentSelect() {
+            const select = document.getElementById('garment-select');
+            select.innerHTML = '<option value="">请选择衣服</option>';
+
+            if (!Array.isArray(wardrobeData)) {
+                console.error('衣橱数据格式错误：', wardrobeData);
+                return;
+            }
+
+            wardrobeData.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = `${item.name} (${item.type})`;
+                select.appendChild(option);
+            });
+        }
+        
+        // 生成穿搭推荐（调用大模型）
+        document.getElementById('recommend-btn').addEventListener('click', async function() {
+            // 校验前置条件
+            if (!weatherData) {
+                document.getElementById('recommend-error').textContent = '请先查询天气';
+                document.getElementById('recommend-error').style.display = 'block';
+                return;
+            }
+            
+            if (!Array.isArray(wardrobeData) || wardrobeData.length === 0) {
+                document.getElementById('recommend-error').textContent = '衣橱数据加载失败，请刷新页面';
+                document.getElementById('recommend-error').style.display = 'block';
+                return;
+            }
+            
+            const scene = document.getElementById('scene-select').value;
+            const purpose = document.getElementById('purpose-select').value;
+            const style = document.getElementById('style-select').value;
+            
+            if (!scene || !purpose || !style) {
+                document.getElementById('recommend-error').textContent = '请选择完整的场景、目的和风格偏好';
+                document.getElementById('recommend-error').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('recommend-error').style.display = 'none';
+            document.getElementById('recommend-loading').style.display = 'block';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/outfit/recommend`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        scene,
+                        tempC: weatherData.temperature,
+                        weather_type: weatherData.weather_type || weatherData.weather || '',
+                        purpose,
+                        style
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                if (result && result.success) {
+                    recommendData = (result.data && typeof result.data === 'object') ? result.data : {};
+                    
+                    // 处理3套方案
+                    const outfits = (recommendData && recommendData.outfits && Array.isArray(recommendData.outfits)) ? recommendData.outfits
+                        : (result.outfits && Array.isArray(result.outfits)) ? result.outfits
+                        : [];
+                    
+                    const normalizedOutfits = normalizeOutfits(outfits, recommendData, result);
+                    recommendData.outfits = normalizedOutfits;
+                    recommendData.selected_items = normalizedOutfits[0] ? normalizedOutfits[0].selected_items : [];
+                    renderOutfitPlans(normalizedOutfits);
+                    
+                    // 处理需补充的衣物
+                    if (recommendData.missing_items && recommendData.missing_items.length > 0) {
+                        const missingText = recommendData.missing_items.map(item => {
+                            if (item.suggestion) {
+                                return item.suggestion;
+                            } else {
+                                const type = item.type || '';
+                                const example = item.example || item.name || '';
+                                const reason = item.reason || '';
+                                if (type && example) {
+                                    return `缺失${type}：示例「${example}」，理由：${reason || '建议补齐该类别以完善整体搭配'}`;
+                                }
+                                if (type) {
+                                    return `缺失${type}：${reason || '建议补齐该类别以完善整体搭配'}`;
+                                }
+                                return reason || '建议补齐缺失单品以完善整体搭配';
+                            }
+                        }).join('；');
+                        document.getElementById('missing-text').textContent = missingText;
+                        document.getElementById('missing-text').style.color = '#f0f0f0';
+                        document.getElementById('missing-text').style.fontSize = '1rem';
+                        document.getElementById('missing-text').style.lineHeight = '1.6';
+                        // 只渲染前3个缺失单品
+                        const limitedMissingItems = (recommendData.missing_items || []).slice(0, 3);
+                        renderMissingTypeCards(limitedMissingItems);
+                        document.getElementById('missing-items').style.display = 'block';
+                    } else {
+                        // 当没有缺失单品时，显示固定提示信息
+                        document.getElementById('missing-text').textContent = '没有缺失任何服装';
+                        document.getElementById('missing-text').style.color = '#f0f0f0';
+                        document.getElementById('missing-text').style.fontSize = '1rem';
+                        document.getElementById('missing-text').style.lineHeight = '1.6';
+                        renderMissingTypeCards([]);
+                        document.getElementById('missing-items').style.display = 'block';
+                    }
+                    
+                    document.getElementById('recommend-result').style.display = 'block';
+                    console.log('穿搭推荐生成成功（大模型）:', recommendData);
+                } else {
+                    const msg = (result && (result.error || result.message)) || '生成推荐失败';
+                    document.getElementById('recommend-error').textContent = msg;
+                    document.getElementById('recommend-error').style.display = 'block';
+                    console.error('生成推荐失败:', result);
+                }
+            } catch (error) {
+                document.getElementById('recommend-error').textContent = '生成推荐失败，请稍后重试';
+                document.getElementById('recommend-error').style.display = 'block';
+                console.error('生成推荐异常:', error);
+            } finally {
+                document.getElementById('recommend-loading').style.display = 'none';
+            }
+        });
+
+        function normalizeOutfits(outfits, recommendData, result) {
+            const safe = Array.isArray(outfits) ? outfits : [];
+            const fallbackReason = (recommendData && recommendData.reason) || result.reason || '暂无搭配理由';
+            const fallbackItems = (result.selected_items && Array.isArray(result.selected_items)) ? result.selected_items
+                : (recommendData && Array.isArray(recommendData.selected_items)) ? recommendData.selected_items
+                : [];
+            const normalized = safe
+                .slice(0, 3)
+                .map((o, idx) => ({
+                    title: o.title || `方案${idx + 1}`,
+                    reason: (o.reason || '').trim() || fallbackReason,
+                    selected_items: Array.isArray(o.selected_items) ? o.selected_items : fallbackItems
+                }));
+            while (normalized.length < 3) {
+                normalized.push({
+                    title: `方案${normalized.length + 1}`,
+                    reason: fallbackReason,
+                    selected_items: fallbackItems
+                });
+            }
+            return normalized;
+        }
+
+        function renderOutfitCardsInto(container, items) {
+            if (!container) return;
+            container.innerHTML = '';
+            if (!items || !Array.isArray(items) || items.length === 0) {
+                container.innerHTML = "<div style='color:rgba(240,240,240,0.7);'>暂无推荐衣物</div>";
+                return;
+            }
+            items.forEach(item => {
+                const img = item.image_url || item.image || '/img/placeholder.svg';
+                const name = item.name || '';
+                const type = item.type || '';
+                const temp = item.suitable_temp || '未知';
+                const card = document.createElement('div');
+                card.className = 'outfit-card';
+                card.innerHTML = `
+                    <img src="${img}" alt="${name}" onerror="this.src='/img/placeholder.svg'">
+                    <div class="meta">
+                        <div class="name">${name}</div>
+                        <div class="sub">${type} · 适合温度：${temp}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderOutfitPlans(outfits) {
+            const container = document.getElementById('outfits-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            (outfits || []).slice(0, 3).forEach((o, idx) => {
+                const plan = document.createElement('div');
+                plan.className = 'outfit-plan';
+                plan.innerHTML = `
+                    <div class="outfit-plan-header">
+                        <div class="outfit-plan-title">${o.title || `方案${idx + 1}`}</div>
+                    </div>
+                    <div class="outfit-plan-body">
+                        <div style="color:#ffd700;font-weight:800;margin-bottom:0.35rem;">搭配理由</div>
+                        <div class="outfit-plan-reason"></div>
+                        <div style="color:#ffd700;font-weight:800;margin:0.9rem 0 0.35rem;">推荐单品</div>
+                        <div class="outfit-cards"></div>
+                        <div class="outfit-plan-actions">
+                            <button class="btn btn-secondary outfit-tryon-btn" data-outfit-index="${idx}">换装此方案</button>
+                        </div>
+                    </div>
+                `;
+                const reasonEl = plan.querySelector('.outfit-plan-reason');
+                if (reasonEl) reasonEl.textContent = (o.reason || '').trim() || '暂无搭配理由';
+                const cardsEl = plan.querySelector('.outfit-cards');
+                renderOutfitCardsInto(cardsEl, o.selected_items);
+                container.appendChild(plan);
+            });
+        }
+
+
+
+        function renderMissingTypeCards(items) {
+            const container = document.getElementById('missing-type-cards');
+            if (!container) return;
+            container.innerHTML = '';
+            if (!items || !Array.isArray(items) || items.length === 0) {
+                return;
+            }
+            // 只渲染前3个缺失单品
+            items.slice(0, 3).forEach((item) => {
+                const type = item.type || item.category || '缺失类别';
+                const example = item.example || item.name || '';
+                const reason = item.reason || item.suggestion || '';
+                const keyword = item.taobaoKeyword || item.taobao_keyword || item.taobaoKeyword || example || type;
+                const link = buildTaobaoSearchUrl(keyword);
+                const taskId = item.image_task_id || '';
+                const img = item.image_url || item.imageUrl || '/img/placeholder.svg';
+                const card = document.createElement('div');
+                card.className = 'missing-type-card';
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.width = '100%';
+                card.style.maxWidth = '400px';
+                card.style.margin = '0.5rem 0';
+                card.style.border = '1px solid rgba(212, 175, 55, 0.3)';
+                card.style.borderRadius = '12px';
+                card.style.overflow = 'hidden';
+                card.style.background = 'rgba(30, 30, 30, 0.8)';
+                
+                // 图片区域（60%）
+                const imageContainer = document.createElement('div');
+                imageContainer.style.position = 'relative';
+                imageContainer.style.width = '100%';
+                imageContainer.style.height = '200px';
+                imageContainer.style.flexShrink = '0';
+                
+                const imageLink = document.createElement('a');
+                imageLink.href = link;
+                imageLink.target = '_blank';
+                imageLink.rel = 'noopener noreferrer';
+                imageLink.setAttribute('data-taobao-keyword', escapeHtmlAttr(keyword));
+                imageLink.setAttribute('data-category', escapeHtmlAttr(type));
+                imageLink.setAttribute('data-source', 'missing_type');
+                
+                const imgEl = document.createElement('img');
+                imgEl.setAttribute('data-task-id', escapeHtmlAttr(taskId));
+                imgEl.src = img;
+                imgEl.alt = example || type;
+                imgEl.onerror = function() { this.src = '/img/placeholder.svg'; };
+                imgEl.style.width = '100%';
+                imgEl.style.height = '100%';
+                imgEl.style.objectFit = 'cover';
+                
+                imageLink.appendChild(imgEl);
+                
+                if (taskId) {
+                    const loadingEl = document.createElement('div');
+                    loadingEl.className = 'image-loading';
+                    loadingEl.style.position = 'absolute';
+                    loadingEl.style.top = '0';
+                    loadingEl.style.left = '0';
+                    loadingEl.style.width = '100%';
+                    loadingEl.style.height = '100%';
+                    loadingEl.style.background = 'rgba(0,0,0,0.7)';
+                    loadingEl.style.borderRadius = '12px 12px 0 0';
+                    loadingEl.style.display = 'flex';
+                    loadingEl.style.alignItems = 'center';
+                    loadingEl.style.justifyContent = 'center';
+                    loadingEl.style.color = 'white';
+                    loadingEl.style.fontSize = '14px';
+                    loadingEl.textContent = '正在生成...';
+                    imageLink.appendChild(loadingEl);
+                }
+                
+                imageContainer.appendChild(imageLink);
+                card.appendChild(imageContainer);
+                
+                // 文案区域（40%）
+                const contentContainer = document.createElement('div');
+                contentContainer.style.padding = '1rem';
+                contentContainer.style.flexGrow = '1';
+                contentContainer.style.display = 'flex';
+                contentContainer.style.flexDirection = 'column';
+                
+                // 【推荐单品】
+                const productSection = document.createElement('div');
+                productSection.style.marginBottom = '0.5rem';
+                productSection.innerHTML = `<div style="color:#ffd700;font-weight:800;margin-bottom:0.25rem;">【推荐单品】</div><div style="color:#f0f0f0;">${example || type} 男 通勤百搭</div>`;
+                contentContainer.appendChild(productSection);
+                
+                // 【核心细节】
+                const detailSection = document.createElement('div');
+                detailSection.style.marginBottom = '0.5rem';
+                let details = '';
+                if (type === '鞋子') {
+                    details = '低帮系带/橡胶底/纯色鞋面/无条纹';
+                } else if (type === '裤子') {
+                    details = '纯色无条纹/束脚腰头/弹力面料/修身版型';
+                } else if (type === '配饰') {
+                    details = '3.0-3.5cm宽/自动扣/纯色无图案/简约设计';
+                } else if (type === '上衣' || type === '外套') {
+                    details = '纯色无图案/合身版型/舒适面料/简约设计';
+                }
+                detailSection.innerHTML = `<div style="color:#ffd700;font-weight:800;margin-bottom:0.25rem;">【核心细节】</div><div style="color:#f0f0f0;">${details}</div>`;
+                contentContainer.appendChild(detailSection);
+                
+                // 【搭配理由】
+                const reasonSection = document.createElement('div');
+                reasonSection.style.marginBottom = '0.5rem';
+                reasonSection.innerHTML = `<div style="color:#ffd700;font-weight:800;margin-bottom:0.25rem;">【搭配理由】</div><div style="color:#f0f0f0;font-size:0.9rem;line-height:1.4;">${reason || '建议补齐该类别以完善整体搭配'}</div>`;
+                contentContainer.appendChild(reasonSection);
+                
+                // 【风格价值】
+                const valueSection = document.createElement('div');
+                valueSection.style.marginBottom = '0.75rem';
+                let valueText = '';
+                if (type === '鞋子') {
+                    valueText = '补充鞋子能让整体穿搭更完整，提供更好的通勤/行走功能性，让风格更统一。';
+                } else if (type === '裤子') {
+                    valueText = '合适的裤子能建立良好的比例与线条，与上衣形成层次，让整体更利落。';
+                } else if (type === '配饰') {
+                    valueText = '配饰可以收束风格并补齐功能，小面积点缀不抢主单品，让穿搭更精致。';
+                } else if (type === '上衣' || type === '外套') {
+                    valueText = '合适的上衣/外套是穿搭的核心，能奠定整体风格基调，提升穿搭品质。';
+                }
+                valueSection.innerHTML = `<div style="color:#ffd700;font-weight:800;margin-bottom:0.25rem;">【风格价值】</div><div style="color:#f0f0f0;font-size:0.9rem;line-height:1.4;">${valueText}</div>`;
+                contentContainer.appendChild(valueSection);
+                
+                // 去淘宝搜索按钮
+                const buttonContainer = document.createElement('div');
+                buttonContainer.style.marginTop = 'auto';
+                buttonContainer.style.paddingTop = '0.5rem';
+                
+                const searchLink = document.createElement('a');
+                searchLink.href = link;
+                searchLink.target = '_blank';
+                searchLink.rel = 'noopener noreferrer';
+                searchLink.setAttribute('data-taobao-keyword', escapeHtmlAttr(keyword));
+                searchLink.setAttribute('data-category', escapeHtmlAttr(type));
+                searchLink.setAttribute('data-source', 'missing_type');
+                searchLink.style.display = 'inline-block';
+                searchLink.style.padding = '0.5rem 1rem';
+                searchLink.style.background = 'linear-gradient(135deg, #722f37, #9e4a54)';
+                searchLink.style.color = 'white';
+                searchLink.style.border = 'none';
+                searchLink.style.borderRadius = '6px';
+                searchLink.style.fontWeight = '600';
+                searchLink.style.textDecoration = 'none';
+                searchLink.style.transition = 'all 0.3s ease';
+                searchLink.style.cursor = 'pointer';
+                searchLink.textContent = '去淘宝搜索';
+                
+                searchLink.onmouseover = function() {
+                    this.style.background = 'linear-gradient(135deg, #9e4a54, #c96b76)';
+                    this.style.transform = 'translateY(-2px)';
+                };
+                
+                searchLink.onmouseout = function() {
+                    this.style.background = 'linear-gradient(135deg, #722f37, #9e4a54)';
+                    this.style.transform = 'translateY(0)';
+                };
+                
+                buttonContainer.appendChild(searchLink);
+                contentContainer.appendChild(buttonContainer);
+                
+                card.appendChild(contentContainer);
+                container.appendChild(card);
+
+                if (taskId) {
+                    if (imgEl) startMissingImagePoll(taskId, imgEl, keyword);
+                }
+            });
+        }
+
+        const _missingImagePollers = new Map();
+
+        function buildTaobaoSearchUrl(keyword) {
+            const q = (keyword || '').toString().trim();
+            return `https://s.taobao.com/search?q=${encodeURIComponent(q)}`;
+        }
+
+        function escapeHtmlAttr(value) {
+            return String(value || '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('"', '&quot;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;');
+        }
+
+        function sendTaobaoClickMetric(keyword, category, source) {
+            const payload = JSON.stringify({ taobaoKeyword: keyword, category, source });
+            const url = `${API_BASE}/api/metrics/taobao-click`;
+            try {
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon(url, new Blob([payload], { type: 'application/json' }));
+                    return;
+                }
+            } catch (e) {}
+            fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: payload, keepalive: true }).catch(() => {});
+        }
+
+        function showTopNotice(message) {
+            let bar = document.getElementById('top-notice');
+            if (!bar) {
+                bar = document.createElement('div');
+                bar.id = 'top-notice';
+                bar.style.position = 'fixed';
+                bar.style.top = '0';
+                bar.style.left = '0';
+                bar.style.right = '0';
+                bar.style.zIndex = '9999';
+                bar.style.padding = '10px 14px';
+                bar.style.background = 'rgba(114, 47, 55, 0.92)';
+                bar.style.color = '#fff';
+                bar.style.fontWeight = '700';
+                bar.style.fontSize = '14px';
+                bar.style.display = 'none';
+                document.body.appendChild(bar);
+            }
+            bar.textContent = message;
+            bar.style.display = 'block';
+            clearTimeout(bar._t);
+            bar._t = setTimeout(() => { bar.style.display = 'none'; }, 5000);
+        }
+
+        function startMissingImagePoll(taskId, imgEl, keyword) {
+            if (!taskId || _missingImagePollers.has(taskId)) return;
+            let tries = 0;
+            const maxTries = 40;
+            const timer = setInterval(async () => {
+                tries += 1;
+                if (tries > maxTries) {
+                    clearInterval(timer);
+                    _missingImagePollers.delete(taskId);
+                    // 隐藏加载动画
+                    const loadingEl = imgEl.closest('div').querySelector('.image-loading');
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    return;
+                }
+                try {
+                    const resp = await fetch(`${API_BASE}/api/missing-item/image/task/${taskId}`, { credentials: 'include' });
+                    const j = await resp.json().catch(() => ({}));
+                    const data = j && j.data ? j.data : {};
+                    if (!j.success) return;
+                    if (data.status === 'completed' && data.imageUrl) {
+                        imgEl.src = data.imageUrl;
+                        // 隐藏加载动画
+                        const loadingEl = imgEl.closest('div').querySelector('.image-loading');
+                        if (loadingEl) loadingEl.style.display = 'none';
+                        clearInterval(timer);
+                        _missingImagePollers.delete(taskId);
+                        return;
+                    }
+                    if (data.status === 'failed') {
+                        // 隐藏加载动画
+                        const loadingEl = imgEl.closest('div').querySelector('.image-loading');
+                        if (loadingEl) loadingEl.style.display = 'none';
+                        clearInterval(timer);
+                        _missingImagePollers.delete(taskId);
+                        if (keyword) showTopNotice(`该单品暂无法生成图片，请手动在淘宝搜索关键词：${keyword}`);
+                        return;
+                    }
+                } catch (e) {
+                    console.error('图片生成轮询失败:', e);
+                }
+            }, 1500);
+            _missingImagePollers.set(taskId, timer);
+        }
+
+        document.addEventListener('click', function(e) {
+            const a = e.target && e.target.closest ? e.target.closest('a[data-taobao-keyword]') : null;
+            if (!a) return;
+            const keyword = a.getAttribute('data-taobao-keyword') || '';
+            const category = a.getAttribute('data-category') || '';
+            const source = a.getAttribute('data-source') || '';
+            if (keyword) sendTaobaoClickMetric(keyword, category, source);
+        }, true);
+        
+        // 选择人物照片
+        document.getElementById('select-person').addEventListener('click', function() {
+            document.getElementById('person-image').click();
+        });
+        
+        document.getElementById('person-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('person-preview').innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 200px; object-fit: cover; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 4px;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function setTryonInProgress(inProgress) {
+            const cancelBtn = document.getElementById('cancel-tryon');
+            const startBtn = document.getElementById('start-tryon');
+            if (cancelBtn) cancelBtn.style.display = inProgress ? 'inline-block' : 'none';
+            if (startBtn) startBtn.disabled = !!inProgress;
+        }
+
+        async function cancelTryonIfRunning() {
+            tryonCancelRequested = true;
+            try {
+                if (tryonAbortController) tryonAbortController.abort();
+            } catch (e) {}
+            const taskId = tryonCurrentTaskId;
+            tryonCurrentTaskId = '';
+            if (taskId) {
+                try {
+                    await fetch(`${API_BASE}/api/virtual-tryon/task/${taskId}/cancel`, { method: 'POST', credentials: 'include' });
+                } catch (e) {}
+            }
+            const loadingEl = document.getElementById('tryon-loading');
+            const errorEl = document.getElementById('tryon-error');
+            if (loadingEl) loadingEl.style.display = 'none';
+            if (errorEl) {
+                errorEl.textContent = '已取消';
+                errorEl.style.display = 'block';
+            }
+            setTryonInProgress(false);
+        }
+
+        document.getElementById('cancel-tryon').addEventListener('click', async function() {
+            await cancelTryonIfRunning();
+        });
+        
+        // 选择衣服
+        document.getElementById('garment-select').addEventListener('change', function() {
+            const garmentId = this.value;
+            if (garmentId) {
+                const garment = wardrobeData.find(item => item.id == garmentId);
+                if (garment) {
+                    document.getElementById('garment-preview').innerHTML = `<img src="${garment.image_url || '/img/placeholder.svg'}" style="max-width: 100%; max-height: 200px; object-fit: cover; border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 4px;">`;
+                }
+            } else {
+                document.getElementById('garment-preview').innerHTML = '';
+            }
+        });
+        
+        // 开始试衣
+        document.getElementById('start-tryon').addEventListener('click', async function() {
+            const fileInput = document.getElementById('person-image');
+            const garmentId = document.getElementById('garment-select').value;
+            
+            if (!fileInput.files.length) {
+                document.getElementById('tryon-error').textContent = '请上传人物照片';
+                document.getElementById('tryon-error').style.display = 'block';
+                return;
+            }
+            
+            if (!garmentId) {
+                document.getElementById('tryon-error').textContent = '请选择衣服';
+                document.getElementById('tryon-error').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('tryon-error').style.display = 'none';
+            document.getElementById('tryon-loading').style.display = 'block';
+            document.getElementById('tryon-loading').textContent = '正在上传人物照片...';
+            tryonCancelRequested = false;
+            tryonCurrentTaskId = '';
+            tryonAbortController = new AbortController();
+            setTryonInProgress(true);
+            
+            try {
+                // 上传人物照片
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                
+                const uploadResponse = await fetch(`${API_BASE}/api/upload/image`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData,
+                    signal: tryonAbortController.signal
+                });
+                
+                if (!uploadResponse.ok) {
+                    throw new Error(`上传照片失败: HTTP ${uploadResponse.status}`);
+                }
+                
+                const uploadResult = await uploadResponse.json();
+                if (!uploadResult.success) {
+                    throw new Error(uploadResult.message || '上传照片失败');
+                }
+                
+                const personUrl = uploadResult.data.image_url;
+                const garment = wardrobeData.find(item => item.id == garmentId);
+                
+                if (!garment) {
+                    throw new Error('未找到选中的衣服');
+                }
+                
+                // 调用虚拟试衣API
+                document.getElementById('tryon-loading').textContent = '正在生成试衣效果（1/1）...';
+                const tryonResponse = await fetch(`${API_BASE}/api/virtual-tryon`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        person_image_url: personUrl,
+                        garment_image_url: garment.image_url || garment.image || '',
+                        garment_type: garment.type === '上衣' ? 'top' : garment.type === '裤子' ? 'bottom' : 'top'
+                    }),
+                    signal: tryonAbortController.signal
+                });
+                
+                if (!tryonResponse.ok) {
+                    throw new Error(`虚拟试衣失败: HTTP ${tryonResponse.status}`);
+                }
+                
+                const tryonResult = await tryonResponse.json().catch(() => ({}));
+                if (!tryonResult || !tryonResult.success) {
+                    throw new Error((tryonResult && tryonResult.message) || '虚拟试衣失败');
+                }
+                const data = tryonResult.data || {};
+                const taskId = data.task_id || '';
+                const immediateUrl = data.image_url || '';
+                if (immediateUrl) {
+                    document.getElementById('tryon-image').src = immediateUrl;
+                    document.getElementById('tryon-result').style.display = 'block';
+                    return;
+                }
+                if (!taskId) {
+                    throw new Error('试衣接口未返回 task_id');
+                }
+                tryonCurrentTaskId = taskId;
+                const finalUrl = await waitTryonTask(taskId, tryonAbortController.signal);
+                if (!finalUrl) {
+                    throw new Error('试衣未获得有效结果');
+                }
+                document.getElementById('tryon-image').src = finalUrl;
+                document.getElementById('tryon-result').style.display = 'block';
+            } catch (error) {
+                const msg = (error && (error.name === 'AbortError' || String(error.message || '').includes('已取消'))) ? '已取消' : '试衣失败，请稍后重试';
+                document.getElementById('tryon-error').textContent = msg;
+                document.getElementById('tryon-error').style.display = 'block';
+                console.error('虚拟试衣异常:', error);
+            } finally {
+                document.getElementById('tryon-loading').style.display = 'none';
+                setTryonInProgress(false);
+                tryonCurrentTaskId = '';
+            }
+        });
+        
+        // 下载试衣图片
+        document.getElementById('download-tryon').addEventListener('click', function() {
+            const imageUrl = document.getElementById('tryon-image').src;
+            if (imageUrl) {
+                const link = document.createElement('a');
+                link.href = imageUrl;
+                link.download = 'tryon-result.jpg';
+                link.click();
+            }
+        });
+        
+        function buildTryonItemsFromSelected(selectedItems) {
+            const mapType = (t) => {
+                const s = String(t || '');
+                if (s.includes('裙')) return 'dress';
+                if (s.includes('裤')) return 'bottom';
+                if (s.includes('鞋')) return null;
+                return 'top';
+            };
+            const candidates = (Array.isArray(selectedItems) ? selectedItems : [])
+                .map((it) => ({
+                    garment_type: mapType(it.type),
+                    garment_image_url: it.image_url || it.image || ''
+                }))
+                .filter((it) => it.garment_type && it.garment_image_url);
+
+            const dress = candidates.find((it) => it.garment_type === 'dress');
+            if (dress) return [dress];
+
+            const top = candidates.find((it) => it.garment_type === 'top');
+            const bottom = candidates.find((it) => it.garment_type === 'bottom');
+            const out = [];
+            if (top) out.push(top);
+            if (bottom) out.push(bottom);
+            return out.length ? out : candidates.slice(0, 2);
+        }
+
+        async function waitTryonTask(taskId, signal) {
+            const start = Date.now();
+            const timeoutMs = 10 * 60 * 1000;
+            while (Date.now() - start < timeoutMs) {
+                if (tryonCancelRequested) throw new Error('已取消');
+                const resp = await fetch(`${API_BASE}/api/virtual-tryon/task/${taskId}`, { credentials: 'include', signal });
+                const j = await resp.json().catch(() => ({}));
+                if (!resp.ok || !j || !j.success) {
+                    throw new Error((j && (j.message || j.error)) || '生成试衣效果失败，请稍后重试');
+                }
+                const data = j.data || {};
+                const status = String(data.status || '').toLowerCase();
+                if (status === 'completed') {
+                    const url = data.final_image_url || data.image_url || data.imageUrl || '';
+                    return url || '';
+                }
+                if (status === 'canceled') {
+                    throw new Error('已取消');
+                }
+                if (status === 'failed') {
+                    throw new Error((data && data.message) || '生成试衣效果失败，请稍后重试');
+                }
+                await new Promise(r => setTimeout(r, 1500));
+            }
+            throw new Error('生成试衣效果超时，请稍后重试');
+        }
+
+        async function tryonOutfitByIndex(outfitIndex) {
+            document.querySelector('.tryon-section').scrollIntoView({ behavior: 'smooth' });
+            const fileInput = document.getElementById('person-image');
+            if (!fileInput || !fileInput.files || !fileInput.files.length) {
+                alert('请先上传人物照片');
+                return;
+            }
+            const outfits = recommendData && Array.isArray(recommendData.outfits) ? recommendData.outfits : [];
+            const outfit = outfits[outfitIndex];
+            if (!outfit || !Array.isArray(outfit.selected_items) || outfit.selected_items.length === 0) {
+                alert('该方案没有可用的推荐单品，请重新生成推荐');
+                return;
+            }
+
+            const items = buildTryonItemsFromSelected(outfit.selected_items);
+            if (!items.length) {
+                alert('该方案中没有可试穿的衣物（仅支持上衣/下装/裙装）');
+                return;
+            }
+
+            document.getElementById('tryon-error').style.display = 'none';
+            document.getElementById('tryon-loading').style.display = 'block';
+            document.getElementById('tryon-loading').textContent = '正在上传人物照片...';
+            tryonCancelRequested = false;
+            tryonCurrentTaskId = '';
+            tryonAbortController = new AbortController();
+            setTryonInProgress(true);
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                const uploadResp = await fetch(`${API_BASE}/api/upload/image`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData,
+                    signal: tryonAbortController.signal
+                });
+                const uploadJson = await uploadResp.json().catch(() => ({}));
+                if (!uploadResp.ok || !uploadJson || !uploadJson.success) {
+                    throw new Error((uploadJson && (uploadJson.message || uploadJson.error)) || '上传人物照片失败，请稍后重试');
+                }
+                const personUrl = uploadJson.data && uploadJson.data.image_url ? uploadJson.data.image_url : '';
+                if (!personUrl) {
+                    throw new Error('上传人物照片成功但未返回可用URL');
+                }
+
+                const runStep = async (currentUrl, item, stepIndex, total) => {
+                    const resp = await fetch(`${API_BASE}/api/virtual-tryon`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            person_image_url: currentUrl,
+                            garment_image_url: item.garment_image_url,
+                            garment_type: item.garment_type
+                        }),
+                        signal: tryonAbortController.signal
+                    });
+                    const result = await resp.json().catch(() => ({}));
+                    if (!resp.ok || !result || !result.success) {
+                        throw new Error((result && (result.message || result.error)) || '生成试衣效果失败，请稍后重试');
+                    }
+                    const data = result.data || {};
+                    const immediateUrl = data.image_url || data.imageUrl || data.final_image_url || '';
+                    if (immediateUrl) return immediateUrl;
+                    const taskId = data.task_id || '';
+                    if (!taskId) {
+                        throw new Error('生成试衣效果失败，请稍后重试');
+                    }
+                    tryonCurrentTaskId = taskId;
+                    document.getElementById('tryon-loading').textContent = `正在处理试衣效果（${stepIndex + 1}/${total}）...`;
+                    const finalUrl = await waitTryonTask(taskId, tryonAbortController.signal);
+                    if (!finalUrl) {
+                        throw new Error('生成试衣效果失败，请稍后重试');
+                    }
+                    return finalUrl;
+                };
+
+                let currentUrl = personUrl;
+                document.getElementById('tryon-loading').textContent = '正在生成试衣效果...';
+                for (let i = 0; i < items.length; i++) {
+                    if (tryonCancelRequested) throw new Error('已取消');
+                    const item = items[i];
+                    document.getElementById('tryon-loading').textContent = `正在试穿第 ${i + 1}/${items.length} 件...`;
+                    currentUrl = await runStep(currentUrl, item, i, items.length);
+                    if (currentUrl) {
+                        document.getElementById('tryon-image').src = currentUrl;
+                        document.getElementById('tryon-result').style.display = 'block';
+                    }
+                }
+
+                if (!currentUrl) {
+                    throw new Error('生成试衣效果失败，请稍后重试');
+                }
+                document.getElementById('tryon-image').src = currentUrl;
+                document.getElementById('tryon-result').style.display = 'block';
+                document.getElementById('tryon-loading').style.display = 'none';
+            } catch (e) {
+                console.error('换装失败:', e);
+                let msg = (e && (e.name === 'AbortError' || String(e.message || '').includes('已取消'))) ? '已取消' : ((e && e.message) ? e.message : '生成试衣效果失败，请稍后重试');
+                document.getElementById('tryon-error').textContent = msg;
+                document.getElementById('tryon-error').style.display = 'block';
+                document.getElementById('tryon-loading').style.display = 'none';
+            } finally {
+                document.getElementById('tryon-loading').style.display = 'none';
+                setTryonInProgress(false);
+                tryonCurrentTaskId = '';
+            }
+        }
+
+        const outfitsContainer = document.getElementById('outfits-container');
+        if (outfitsContainer) {
+            outfitsContainer.addEventListener('click', async function(e) {
+                const btn = e.target && e.target.closest ? e.target.closest('.outfit-tryon-btn') : null;
+                if (!btn) return;
+                const idx = Number(btn.getAttribute('data-outfit-index'));
+                if (Number.isNaN(idx)) return;
+                await tryonOutfitByIndex(idx);
+            });
+        }
+        
+        // 执行试衣逻辑的函数
+        async function performTryon(fileInput, garmentId) {
+            return new Promise(async (resolve) => {
+                try {
+                    document.getElementById('tryon-error').style.display = 'none';
+                    document.getElementById('tryon-loading').style.display = 'block';
+                    
+                    // 上传人物照片
+                    const formData = new FormData();
+                    formData.append('file', fileInput.files[0]);
+                    
+                    const uploadResponse = await fetch(`${API_BASE}/api/upload/image`, {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formData
+                    });
+                    
+                    if (!uploadResponse.ok) {
+                        throw new Error(`上传照片失败: HTTP ${uploadResponse.status}`);
+                    }
+                    
+                    const uploadResult = await uploadResponse.json();
+                    if (!uploadResult.success) {
+                        throw new Error(uploadResult.message || '上传照片失败');
+                    }
+                    
+                    const personUrl = uploadResult.data.image_url;
+                    const garment = wardrobeData.find(item => item.id == garmentId);
+                    
+                    if (!garment) {
+                        throw new Error('未找到选中的衣服');
+                    }
+                    
+                    // 调用虚拟试衣API
+                    const tryonResponse = await fetch(`${API_BASE}/api/virtual-tryon`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            person_image_url: personUrl,
+                            garment_image_url: garment.image_url || garment.image || '',
+                            garment_type: garment.type === '上衣' ? 'top' : garment.type === '裤子' ? 'bottom' : 'top'
+                        })
+                    });
+                    
+                    if (!tryonResponse.ok) {
+                        throw new Error(`虚拟试衣失败: HTTP ${tryonResponse.status}`);
+                    }
+                    
+                    const tryonResult = await tryonResponse.json().catch(() => ({}));
+                    if (!tryonResult || !tryonResult.success) {
+                        throw new Error((tryonResult && tryonResult.message) || '虚拟试衣失败');
+                    }
+                    const data = tryonResult.data || {};
+                    const taskId = data.task_id || '';
+                    const immediateUrl = data.image_url || '';
+                    if (immediateUrl) {
+                        document.getElementById('tryon-image').src = immediateUrl;
+                        document.getElementById('tryon-result').style.display = 'block';
+                    } else if (taskId) {
+                        const finalUrl = await waitTryonTask(taskId);
+                        if (!finalUrl) throw new Error('试衣未获得有效结果');
+                        document.getElementById('tryon-image').src = finalUrl;
+                        document.getElementById('tryon-result').style.display = 'block';
+                    } else {
+                        throw new Error('试衣接口未返回 task_id');
+                    }
+                } catch (error) {
+                    document.getElementById('tryon-error').textContent = '试衣失败，请稍后重试';
+                    document.getElementById('tryon-error').style.display = 'block';
+                    console.error('虚拟试衣异常:', error);
+                } finally {
+                    document.getElementById('tryon-loading').style.display = 'none';
+                    // 等待2秒让用户看到效果
+                    setTimeout(resolve, 2000);
+                }
+            });
+        }
+
+        // ========== 场景滚轮选择（一定生效版）========== 
+        document.addEventListener('DOMContentLoaded', function () { 
+          const sceneSelect = document.getElementById('scene-select'); 
+
+          if (!sceneSelect) return; 
+
+          // 你的场景列表（必须和页面选项一致） 
+          const scenes = [ 
+            "日常通勤", 
+            "商务会议", 
+            "周末休闲", 
+            "运动健身", 
+            "约会出行", 
+            "朋友聚会", 
+            "正式晚宴", 
+            "户外出行" 
+          ]; 
+
+          // 监听鼠标滚轮 
+          sceneSelect.addEventListener('mousewheel', function (e) { 
+            e.preventDefault(); // 禁止页面滚动 
+
+            let currentIndex = scenes.indexOf(sceneSelect.value); 
+            if (currentIndex === -1) currentIndex = 0; 
+
+            // 滚轮向下 → 下一个 
+            if (e.deltaY > 0) { 
+              currentIndex = (currentIndex + 1) % scenes.length; 
+            } 
+            // 滚轮向上 → 上一个 
+            else { 
+              currentIndex = (currentIndex - 1 + scenes.length) % scenes.length; 
+            } 
+
+            sceneSelect.value = scenes[currentIndex]; 
+            sceneSelect.dispatchEvent(new Event('change')); 
+          }); 
+
+          // 火狐兼容 
+          sceneSelect.addEventListener('wheel', function (e) { 
+            e.preventDefault(); 
+
+            let currentIndex = scenes.indexOf(sceneSelect.value); 
+            if (currentIndex === -1) currentIndex = 0; 
+
+            if (e.deltaY > 0) { 
+              currentIndex = (currentIndex + 1) % scenes.length; 
+            } else { 
+              currentIndex = (currentIndex - 1 + scenes.length) % scenes.length; 
+            } 
+
+            sceneSelect.value = scenes[currentIndex]; 
+            sceneSelect.dispatchEvent(new Event('change')); 
+          }); 
+        }); 
+
+        // ========== 目的滚轮选择 ========== 
+        document.addEventListener('DOMContentLoaded', function () { 
+          const purposeSelect = document.getElementById('purpose-select'); 
+          if (!purposeSelect) return; 
+          const purposes = ["日常办公", "商务会议", "休闲聚会", "运动健身", "约会出行"]; 
+          purposeSelect.addEventListener('mousewheel', function (e) { 
+            e.preventDefault(); 
+            let currentIndex = purposes.indexOf(purposeSelect.value); 
+            if (currentIndex === -1) currentIndex = 0; 
+            currentIndex = (currentIndex + (e.deltaY > 0 ? 1 : -1) + purposes.length) % purposes.length; 
+            purposeSelect.value = purposes[currentIndex]; 
+            purposeSelect.dispatchEvent(new Event('change')); 
+          }); 
+          purposeSelect.addEventListener('wheel', function (e) { 
+            e.preventDefault(); 
+            let currentIndex = purposes.indexOf(purposeSelect.value); 
+            if (currentIndex === -1) currentIndex = 0; 
+            currentIndex = (currentIndex + (e.deltaY > 0 ? 1 : -1) + purposes.length) % purposes.length; 
+            purposeSelect.value = purposes[currentIndex]; 
+            purposeSelect.dispatchEvent(new Event('change')); 
+          }); 
+        }); 
+
+        // ========== 风格偏好滚轮选择 ========== 
+        document.addEventListener('DOMContentLoaded', function () { 
+          const styleSelect = document.getElementById('style-select'); 
+          if (!styleSelect) return; 
+          const styles = ["简约", "复古", "街头", "日系", "美式", "韩系"]; 
+          styleSelect.addEventListener('mousewheel', function (e) { 
+            e.preventDefault(); 
+            let currentIndex = styles.indexOf(styleSelect.value); 
+            if (currentIndex === -1) currentIndex = 0; 
+            currentIndex = (currentIndex + (e.deltaY > 0 ? 1 : -1) + styles.length) % styles.length; 
+            styleSelect.value = styles[currentIndex]; 
+            styleSelect.dispatchEvent(new Event('change')); 
+          }); 
+          styleSelect.addEventListener('wheel', function (e) { 
+            e.preventDefault(); 
+            let currentIndex = styles.indexOf(styleSelect.value); 
+            if (currentIndex === -1) currentIndex = 0; 
+            currentIndex = (currentIndex + (e.deltaY > 0 ? 1 : -1) + styles.length) % styles.length; 
+            styleSelect.value = styles[currentIndex]; 
+            styleSelect.dispatchEvent(new Event('change')); 
+          }); 
+        });
+    </script>
+
+    <!-- 传递 CSRF 令牌到前端 -->
+    <script>
+        window.csrfToken = '<%= csrfToken %>';
+        window.AI_API_BASE = '<%= aiApiBase %>';
+        window.userClothes = JSON.parse('<%- JSON.stringify(clothes || []) %>');
+    </script>
+
+    <script src="/js/artistic-animations.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/advanced-script.js"></script>
+    <script src="/js/map-select.js"></script>
+    <script>
+        // 文字揭示动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const revealTexts = document.querySelectorAll('.reveal-text span');
+            
+            revealTexts.forEach(text => {
+                gsap.from(text, {
+                    yPercent: 100,
+                    duration: 1,
+                    ease: 'power2.out',
+                    delay: 0.2
+                });
+            });
+        });
+    </script>
+</body>
+</html>

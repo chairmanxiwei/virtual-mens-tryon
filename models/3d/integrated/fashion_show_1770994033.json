@@ -1,0 +1,558 @@
+{
+  "user_image": "data/user_clothes/test_image.jpg",
+  "clothing_images": [
+    "data/user_clothes/test_clothing_1.jpg",
+    "data/user_clothes/test_clothing_2.jpg",
+    "data/user_clothes/test_clothing_3.jpg"
+  ],
+  "show_results": [
+    {
+      "success": true,
+      "method": "integrated_3d_tryon",
+      "processing_time": 1770994033.917752,
+      "components": {
+        "tryon_2d": null,
+        "clothing_model_3d": null,
+        "advanced_tryon_3d": {
+          "success": true,
+          "scene_data": {
+            "user_model": {
+              "type": "threejs_3d",
+              "image_size": [
+                400,
+                600
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "clothing_model": {
+              "type": "threejs_3d",
+              "image_size": [
+                300,
+                400
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "camera": {
+              "position": [
+                0,
+                87.5,
+                200
+              ],
+              "target": [
+                0,
+                87.5,
+                0
+              ],
+              "fov": 45
+            },
+            "lights": [
+              {
+                "type": "ambient",
+                "color": "#ffffff",
+                "intensity": 0.6
+              },
+              {
+                "type": "directional",
+                "color": "#ffffff",
+                "intensity": 0.8,
+                "position": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ],
+            "environment": {
+              "type": "studio",
+              "background": "#f0f2f6",
+              "lighting": "默认"
+            },
+            "tryon_params": {
+              "quality": "高精度",
+              "fit_style": "标准",
+              "fit_adjustment": 1.0,
+              "render_quality": "高",
+              "show_details": true,
+              "mode": "高级3D试穿 (真实)"
+            }
+          },
+          "scene_path": "models\\3d\\advanced\\tryon_1770994033.json",
+          "preview_path": "models\\3d\\advanced\\tryon_1770994033.html",
+          "user_model": {
+            "success": true,
+            "model_data": {
+              "type": "threejs_3d",
+              "image_size": [
+                400,
+                600
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "method": "threejs",
+            "quality": "高精度",
+            "processing_time": "1.2s",
+            "frontend_ready": true,
+            "message": "使用Three.js纯前端3D建模（稳定可靠）",
+            "modeling_method": "external_api",
+            "quality_level": "高精度"
+          },
+          "clothing_model": {
+            "success": true,
+            "model_data": {
+              "type": "threejs_3d",
+              "image_size": [
+                300,
+                400
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "method": "threejs",
+            "quality": "高精度",
+            "processing_time": "1.2s",
+            "frontend_ready": true,
+            "message": "使用Three.js纯前端3D建模（稳定可靠）",
+            "modeling_method": "threejs",
+            "quality_level": "高精度"
+          },
+          "method": "advanced_3d_tryon",
+          "quality": "高精度",
+          "fit_style": "标准",
+          "render_quality": "高",
+          "show_details": true,
+          "mode": "高级3D试穿 (真实)",
+          "tryon_params": {
+            "quality": "高精度",
+            "fit_style": "标准",
+            "fit_adjustment": 1.0,
+            "render_quality": "高",
+            "show_details": true,
+            "mode": "高级3D试穿 (真实)"
+          }
+        }
+      },
+      "result_path": "models\\3d\\integrated\\integrated_tryon_1770994033.json"
+    },
+    {
+      "success": true,
+      "method": "integrated_3d_tryon",
+      "processing_time": 1770994033.923664,
+      "components": {
+        "tryon_2d": null,
+        "clothing_model_3d": null,
+        "advanced_tryon_3d": {
+          "success": true,
+          "scene_data": {
+            "user_model": {
+              "type": "threejs_3d",
+              "image_size": [
+                400,
+                600
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "clothing_model": {
+              "type": "threejs_3d",
+              "image_size": [
+                300,
+                400
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "camera": {
+              "position": [
+                0,
+                87.5,
+                200
+              ],
+              "target": [
+                0,
+                87.5,
+                0
+              ],
+              "fov": 45
+            },
+            "lights": [
+              {
+                "type": "ambient",
+                "color": "#ffffff",
+                "intensity": 0.6
+              },
+              {
+                "type": "directional",
+                "color": "#ffffff",
+                "intensity": 0.8,
+                "position": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ],
+            "environment": {
+              "type": "studio",
+              "background": "#f0f2f6",
+              "lighting": "默认"
+            },
+            "tryon_params": {
+              "quality": "高精度",
+              "fit_style": "标准",
+              "fit_adjustment": 1.0,
+              "render_quality": "高",
+              "show_details": true,
+              "mode": "高级3D试穿 (真实)"
+            }
+          },
+          "scene_path": "models\\3d\\advanced\\tryon_1770994033.json",
+          "preview_path": "models\\3d\\advanced\\tryon_1770994033.html",
+          "user_model": {
+            "success": true,
+            "model_data": {
+              "type": "threejs_3d",
+              "image_size": [
+                400,
+                600
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "method": "threejs",
+            "quality": "高精度",
+            "processing_time": "1.2s",
+            "frontend_ready": true,
+            "message": "使用Three.js纯前端3D建模（稳定可靠）",
+            "modeling_method": "external_api",
+            "quality_level": "高精度"
+          },
+          "clothing_model": {
+            "success": true,
+            "model_data": {
+              "type": "threejs_3d",
+              "image_size": [
+                300,
+                400
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "method": "threejs",
+            "quality": "高精度",
+            "processing_time": "1.2s",
+            "frontend_ready": true,
+            "message": "使用Three.js纯前端3D建模（稳定可靠）",
+            "modeling_method": "threejs",
+            "quality_level": "高精度"
+          },
+          "method": "advanced_3d_tryon",
+          "quality": "高精度",
+          "fit_style": "标准",
+          "render_quality": "高",
+          "show_details": true,
+          "mode": "高级3D试穿 (真实)",
+          "tryon_params": {
+            "quality": "高精度",
+            "fit_style": "标准",
+            "fit_adjustment": 1.0,
+            "render_quality": "高",
+            "show_details": true,
+            "mode": "高级3D试穿 (真实)"
+          }
+        }
+      },
+      "result_path": "models\\3d\\integrated\\integrated_tryon_1770994033.json"
+    },
+    {
+      "success": true,
+      "method": "integrated_3d_tryon",
+      "processing_time": 1770994033.9294565,
+      "components": {
+        "tryon_2d": null,
+        "clothing_model_3d": null,
+        "advanced_tryon_3d": {
+          "success": true,
+          "scene_data": {
+            "user_model": {
+              "type": "threejs_3d",
+              "image_size": [
+                400,
+                600
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "clothing_model": {
+              "type": "threejs_3d",
+              "image_size": [
+                300,
+                400
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "camera": {
+              "position": [
+                0,
+                87.5,
+                200
+              ],
+              "target": [
+                0,
+                87.5,
+                0
+              ],
+              "fov": 45
+            },
+            "lights": [
+              {
+                "type": "ambient",
+                "color": "#ffffff",
+                "intensity": 0.6
+              },
+              {
+                "type": "directional",
+                "color": "#ffffff",
+                "intensity": 0.8,
+                "position": [
+                  1,
+                  1,
+                  1
+                ]
+              }
+            ],
+            "environment": {
+              "type": "studio",
+              "background": "#f0f2f6",
+              "lighting": "默认"
+            },
+            "tryon_params": {
+              "quality": "高精度",
+              "fit_style": "标准",
+              "fit_adjustment": 1.0,
+              "render_quality": "高",
+              "show_details": true,
+              "mode": "高级3D试穿 (真实)"
+            }
+          },
+          "scene_path": "models\\3d\\advanced\\tryon_1770994033.json",
+          "preview_path": "models\\3d\\advanced\\tryon_1770994033.html",
+          "user_model": {
+            "success": true,
+            "model_data": {
+              "type": "threejs_3d",
+              "image_size": [
+                400,
+                600
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "method": "threejs",
+            "quality": "高精度",
+            "processing_time": "1.2s",
+            "frontend_ready": true,
+            "message": "使用Three.js纯前端3D建模（稳定可靠）",
+            "modeling_method": "external_api",
+            "quality_level": "高精度"
+          },
+          "clothing_model": {
+            "success": true,
+            "model_data": {
+              "type": "threejs_3d",
+              "image_size": [
+                300,
+                400
+              ],
+              "quality": "high",
+              "geometry": "human",
+              "material": "standard",
+              "textures": {
+                "enabled": true,
+                "quality": "高"
+              },
+              "lighting": "默认",
+              "background": "纯色",
+              "threejs_config": {
+                "enable_animation": true,
+                "enable_shadows": true,
+                "enable_pbr": true,
+                "enable_interaction": true
+              }
+            },
+            "method": "threejs",
+            "quality": "高精度",
+            "processing_time": "1.2s",
+            "frontend_ready": true,
+            "message": "使用Three.js纯前端3D建模（稳定可靠）",
+            "modeling_method": "threejs",
+            "quality_level": "高精度"
+          },
+          "method": "advanced_3d_tryon",
+          "quality": "高精度",
+          "fit_style": "标准",
+          "render_quality": "高",
+          "show_details": true,
+          "mode": "高级3D试穿 (真实)",
+          "tryon_params": {
+            "quality": "高精度",
+            "fit_style": "标准",
+            "fit_adjustment": 1.0,
+            "render_quality": "高",
+            "show_details": true,
+            "mode": "高级3D试穿 (真实)"
+          }
+        }
+      },
+      "result_path": "models\\3d\\integrated\\integrated_tryon_1770994033.json"
+    }
+  ],
+  "total_clothes": 3,
+  "successful_tryons": 3
+}

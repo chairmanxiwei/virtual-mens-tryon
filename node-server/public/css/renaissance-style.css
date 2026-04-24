@@ -1,0 +1,699 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+:root {
+    --bg-color: #0f0f0f;
+    --text-color: #f0f0f0;
+    --accent-gold: #d4af37;
+    --accent-red: #722f37;
+    --card-bg: #1a1a1a;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+    --spacing-unit: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Enable custom cursor only when JS sets the flag */
+.custom-cursor-enabled * {
+    cursor: none;
+}
+.custom-cursor-enabled a {
+    cursor: none;
+}
+
+/* Custom Cursor */
+.cursor-dot,
+.cursor-outline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-gold);
+}
+
+.cursor-outline {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(240, 240, 240, 0.5);
+    transition: width 0.2s, height 0.2s, background-color 0.2s;
+}
+
+body:hover .cursor-outline {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(212, 175, 55, 0.1);
+    border-color: var(--accent-gold);
+}
+
+/* Navigation */
+.nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    background-color: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.brand {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--text-color);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-item {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    position: relative;
+    overflow: hidden;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid rgba(240, 240, 240, 0.1);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+}
+
+.nav-item:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    background-color: rgba(212, 175, 55, 0.05);
+    transform: translateY(-2px);
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent-gold);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s ease;
+}
+
+.nav-item:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.nav-item.active {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    background-color: rgba(212, 175, 55, 0.1);
+}
+
+.nav-item.active::after {
+    transform: scaleX(1);
+}
+
+/* Sections */
+section {
+    min-height: 100vh;
+    width: 100%;
+    padding: 6rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.hero {
+    align-items: center;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 6vw;
+    margin-bottom: 2rem;
+    overflow: hidden; /* For text reveal */
+    color: var(--text-color);
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: rgba(240, 240, 240, 0.7);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hero-bg-text {
+    position: absolute;
+    font-size: 20vw;
+    font-family: var(--font-heading);
+    opacity: 0.03;
+    white-space: nowrap;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Gallery / Feature Section */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2rem;
+    align-items: start;
+}
+
+.gallery-header {
+    grid-column: 1 / 5;
+    position: sticky;
+    top: 20vh;
+}
+
+.gallery-header h2 {
+    font-size: 4rem;
+    margin-bottom: 2rem;
+    color: var(--accent-gold);
+}
+
+.gallery-grid {
+    grid-column: 6 / 13;
+    display: flex;
+    flex-direction: column;
+    gap: 8rem;
+}
+
+/* Cards */
+.art-card {
+    position: relative;
+    width: 100%;
+    background-color: var(--card-bg);
+    overflow: hidden;
+    transition: transform 0.5s ease;
+    border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.art-card-image {
+    width: 100%;
+    height: 60vh;
+    object-fit: cover;
+    filter: grayscale(80%) sepia(20%); /* More antique look */
+    transition: filter 0.5s ease, transform 0.5s ease;
+}
+
+.art-card:hover .art-card-image {
+    filter: grayscale(0%) sepia(0%);
+    transform: scale(1.05);
+}
+
+.art-card-content {
+    padding: 2rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(15,15,15,0.95), transparent);
+    transform: translateY(20%);
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.art-card:hover .art-card-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.art-card h3 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent-gold);
+}
+
+.art-card p {
+    font-size: 1rem;
+    color: rgba(240, 240, 240, 0.8);
+}
+
+/* Stats Section (Horizontal Scroll Idea or just Grid) */
+.stats-section {
+    padding: 10rem 4rem;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid rgba(240, 240, 240, 0.1);
+    border-bottom: 1px solid rgba(240, 240, 240, 0.1);
+    padding: 4rem 0;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    color: var(--accent-red);
+    display: block;
+    line-height: 1;
+}
+
+.stat-label {
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    display: block;
+}
+
+/* Footer */
+footer {
+    padding: 4rem;
+    text-align: center;
+    border-top: 1px solid rgba(240, 240, 240, 0.1);
+    font-size: 0.9rem;
+    color: rgba(240, 240, 240, 0.5);
+}
+
+/* Utility */
+.reveal-text {
+    overflow: hidden;
+    display: block;
+}
+
+.reveal-text span {
+    display: block;
+    transform: translateY(100%);
+}
+
+/* =========================================
+   Functional Components
+   ========================================= */
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    cursor: none;
+}
+
+.btn-primary, .action-btn.primary {
+    background-color: transparent;
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+}
+
+.btn-primary:hover, .action-btn.primary:hover {
+    background-color: var(--accent-gold);
+    color: var(--bg-color);
+}
+
+.btn-secondary, .action-btn.secondary {
+    background-color: transparent;
+    border-color: rgba(240, 240, 240, 0.3);
+    color: var(--text-color);
+}
+
+.btn-secondary:hover, .action-btn.secondary:hover {
+    border-color: var(--text-color);
+    background-color: rgba(240, 240, 240, 0.1);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.7rem;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 2rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(240, 240, 240, 0.6);
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 1rem;
+    background-color: #0f0f0f;
+    border: 1px solid rgba(240,240,240,0.2);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    cursor: text;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+select {
+    cursor: pointer;
+}
+
+/* 下拉菜单样式 */
+select option {
+    background-color: #0f0f0f;
+    color: var(--text-color);
+    padding: 0.5rem;
+}
+
+select option:hover {
+    background-color: rgba(212, 175, 55, 0.1);
+    color: var(--accent-gold);
+}
+
+select option:checked {
+    background-color: rgba(212, 175, 55, 0.2);
+    color: var(--accent-gold);
+}
+
+button, .btn, a {
+    cursor: pointer;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+}
+
+/* Login/Register Specific */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 4rem;
+    background-color: var(--card-bg);
+    border: 1px solid rgba(240, 240, 240, 0.1);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.form-header h1 {
+    font-size: 2.5rem;
+    color: var(--accent-gold);
+    margin-bottom: 0.5rem;
+}
+
+/* Wardrobe Grid */
+.clothing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+.clothing-card {
+    background-color: var(--card-bg);
+    border: 1px solid rgba(240, 240, 240, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.clothing-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-gold);
+}
+
+.clothing-card-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    filter: grayscale(50%);
+    transition: filter 0.3s ease;
+}
+
+.clothing-card:hover .clothing-card-image {
+    filter: grayscale(0%);
+}
+
+.clothing-card-info {
+    padding: 1.5rem;
+}
+
+.clothing-card-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.clothing-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: rgba(240, 240, 240, 0.5);
+    text-transform: uppercase;
+}
+
+/* Upload Modal */
+.upload-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 15, 15, 0.9);
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding: 6vh 0;
+}
+
+.upload-modal-content {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    background-color: var(--card-bg);
+    padding: 3rem;
+    width: 90%;
+    max-width: 600px;
+    border: 1px solid var(--accent-gold);
+    margin: 0 auto;
+    max-height: 88vh;
+    overflow-y: auto;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.upload-zone {
+    border: 1px dashed rgba(240, 240, 240, 0.3);
+    padding: 4rem 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    transition: border-color 0.3s ease;
+}
+
+.upload-zone:hover {
+    border-color: var(--accent-gold);
+}
+
+.upload-zone i {
+    font-size: 3rem;
+    color: var(--accent-gold);
+    margin-bottom: 1rem;
+}
+
+/* AI Outfit & Tryon */
+.outfit-grid, .tryon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.tryon-panel {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border: 1px solid rgba(240, 240, 240, 0.1);
+}
+
+#3d-container {
+    width: 100%;
+    height: 500px;
+    background-color: #000;
+}
+
+/* Tech Stack Section */
+.tech-stack-section {
+    padding: 8rem 4rem;
+    background: linear-gradient(to bottom, var(--bg-color), #151515);
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    margin-top: 4rem;
+}
+
+.tech-item {
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 2rem;
+    position: relative;
+    transition: all 0.4s ease;
+}
+
+.tech-item::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border: 1px solid rgba(240, 240, 240, 0.05);
+    pointer-events: none;
+}
+
+.tech-item:hover {
+    border-color: var(--accent-gold);
+    background-color: rgba(212, 175, 55, 0.05);
+    transform: translateY(-10px);
+}
+
+.tech-icon {
+    font-size: 2.5rem;
+    color: var(--accent-gold);
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+}
+
+.tech-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.tech-item p {
+    font-size: 0.9rem;
+    color: rgba(240, 240, 240, 0.6);
+    line-height: 1.8;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-title h2 {
+    font-size: 3.5rem;
+    color: var(--accent-gold);
+    margin-bottom: 1rem;
+}
+
+.section-title p {
+    color: rgba(240, 240, 240, 0.6);
+    font-style: italic;
+}
+/* 衣物卡片悬停效果 - 让操作图标滑出来 */
+.clothing-card:hover .card-actions {
+    transform: translateY(0);
+}
+
+/* 确保卡片有正确的定位上下文 */
+.clothing-card {
+    position: relative;
+    overflow: hidden;
+}
+
+/* 操作图标容器样式（保持与内联样式一致） */
+.card-actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    background: rgba(15,15,15,0.8);
+    display: flex;
+    justify-content: space-around;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 10;
+}
+
+/* 操作图标样式 */
+.card-actions i {
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.card-actions i:hover {
+    opacity: 0.8;
+    color: var(--accent-gold);
+}

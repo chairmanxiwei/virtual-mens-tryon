@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/renaissance-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .edit-container {
+            max-width: 800px;
+            margin: 120px auto 50px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--accent-gold);
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 4px;
+        }
+        .preview-box {
+            margin-top: 1rem;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            text-align: center;
+        }
+        .preview-img {
+            max-width: 100%;
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav class="nav-overlay">
+        <div class="brand">虚拟男装</div>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-item">返回首页</a>
+        </div>
+    </nav>
+
+    <div class="edit-container">
+        <h2 style="color: var(--accent-gold); margin-bottom: 2rem; text-align: center;">首页内容配置</h2>
+        
+        <form id="home-edit-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>顶部背景图 (1920x1080, ≤5MB)</label>
+                <input type="file" name="heroImage" id="heroImageInput" accept="image/jpeg,image/png,image/webp" class="form-control">
+                <div class="preview-box">
+                    <!-- 主图预览：如果已有图片则显示，否则隐藏 -->
+                    <img id="heroPreview" class="preview-img" src="<%= homeContent.heroImage || '' %>" 
+                         <% if (homeContent.heroImage) { %> style="display:block;" <% } %>>
+                    <p id="noPreviewText" 
+                       <% if (!homeContent.heroImage) { %> style="display:block;" <% } else { %> style="display:none;" <% } %>>暂无预览</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>主标题 (≤60字符)</label>
+                <input type="text" name="title" class="form-control" value="<%= homeContent.title || '' %>" maxlength="60" required>
+            </div>
+
+            <div class="form-group">
+                <label>副标题 (≤60字符)</label>
+                <input type="text" name="subtitle" class="form-control" value="<%= homeContent.subtitle || '' %>" maxlength="60">
+            </div>
+
+            <div class="form-group">
+                <label>描述文案 (≤120字符)</label>
+                <textarea name="description" class="form-control" rows="3" maxlength="120"><%= homeContent.description || '' %></textarea>
+            </div>
+
+            <h3 style="color: var(--accent-gold); margin: 2rem 0 1rem;">首页图片配置</h3>
+            
+            <% if (homeContent.gallery && homeContent.gallery.length > 0) { %>
+                <% homeContent.gallery.forEach((item, index) => { %>
+                    <div class="form-group" style="border: 1px solid rgba(212, 175, 55, 0.2); padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+                        <h4 style="color: var(--accent-gold); margin-bottom: 1rem;">图片 <%= index + 1 %></h4>
+                        
+                        <div class="form-group">
+                            <label>标题 (≤30字符)</label>
+                            <input type="text" name="gallery[<%= index %>][title]" class="form-control" value="<%= item.title || '' %>" maxlength="30" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>描述 (≤60字符)</label>
+                            <textarea name="gallery[<%= index %>][description]" class="form-control" rows="2" maxlength="60"><%= item.description || '' %></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>图片 (≤5MB)</label>
+                            <input type="file" name="gallery[<%= index %>][image]" accept="image/jpeg,image/png,image/webp" class="form-control">
+                            <div class="preview-box">
+                                <!-- 画廊图片预览：如果已有图片则显示，否则隐藏 -->
+                                <img src="<%= item.image || '' %>" 
+                                     <% if (item.image) { %> style="display:block; max-height: 200px; margin: 0 auto;" <% } else { %> style="display:none;" <% } %>>
+                                <p <% if (!item.image) { %> style="display:block;" <% } else { %> style="display:none;" <% } %>>暂无预览</p>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } %>
+
+            <button type="submit" class="btn btn-primary btn-block" id="saveBtn">
+                <i class="fas fa-save"></i> 保存配置
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // 主图预览功能
+        document.getElementById('heroImageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('heroPreview');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    document.getElementById('noPreviewText').style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 表单提交
+        document.getElementById('home-edit-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('saveBtn');
+            const originalText = btn.innerHTML;
+            
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 保存中...';
+
+                const formData = new FormData(this);
+                const response = await fetch('/dashboard/save-home', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('保存成功！');
+                    window.location.href = '/dashboard?updated=' + Date.now();
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                alert('保存失败: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+    </script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

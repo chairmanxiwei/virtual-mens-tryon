@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/renaissance-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav class="nav-overlay">
+        <div class="brand">虚拟男装</div>
+    </nav>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="form-header">
+                <h1>创建账户</h1>
+                <p>开启您的专业商务形象之旅</p>
+            </div>
+
+            <% if (error) { %>
+            <div style="color: var(--accent-red); margin-bottom: 1rem; text-align: center;">
+                <i class="fas fa-exclamation-circle"></i> <%= error %>
+            </div>
+            <% } %>
+
+            <form action="/register" method="POST">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" placeholder="请输入您的用户名" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">邮箱地址</label>
+                    <input type="email" id="email" name="email" placeholder="请输入您的邮箱" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" placeholder="请输入您的密码" required>
+                </div>
+                <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-user-plus"></i> 立即注册
+                </button>
+                <a href="/" class="btn btn-secondary btn-block">
+                    <i class="fas fa-arrow-left"></i> 返回登录
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="/js/artistic-animations.js"></script>
+</body>
+    </html>

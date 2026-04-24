@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/renaissance-style.css">
+    <link rel="stylesheet" href="/css/inline-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Overlay (备用) -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <i class="fas fa-spinner fa-spin"></i> 处理中...
+        </div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <nav class="nav-overlay">
+        <div class="brand">虚拟男装</div>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-item">首页</a>
+            <a href="/wardrobe" class="nav-item">衣橱</a>
+            <a href="/ai-outfit" class="nav-item">AI搭配</a>
+            <a href="/virtual-tryon" class="nav-item">虚拟试穿</a>
+            <a href="/logout" class="nav-item">登出</a>
+        </div>
+    </nav>
+
+    <section>
+        <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
+            <div class="hero" style="min-height: 30vh; padding-top: 10vh;">
+                <h1 class="hero-title reveal-text">
+                    <span>虚拟试穿</span>
+                </h1>
+                <p class="hero-subtitle">上传全身照，体验沉浸式3D试穿效果</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; align-items: start;">
+                <!-- 左侧：上传和选择 -->
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    <!-- 上传卡片 -->
+                    <div class="login-card" style="padding: 2rem; max-width: 100%;">
+                        <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">1. 上传照片</h3>
+                        
+                        <% if (uploaded) { %>
+                        <div style="background: rgba(46, 125, 50, 0.2); border: 1px solid #2e7d32; padding: 1rem; margin-bottom: 1rem; color: #a5d6a7;">
+                            <i class="fas fa-check-circle"></i> 上传成功！
+                        </div>
+                        <% } %>
+                        <% if (typeof error !== 'undefined' && error) { %>
+                        <div style="background: rgba(211, 47, 47, 0.2); border: 1px solid #d32f2f; padding: 1rem; margin-bottom: 1rem; color: #ef9a9a;">
+                            <i class="fas fa-exclamation-triangle"></i> 
+                            <% if (error === 'csrf') { %>CSRF 验证失败，请刷新后重试。<%; } %>
+                            <% if (error === 'nofile') { %>未选择图片或格式不支持，请上传 JPEG/PNG/WebP。<%; } %>
+                            <% if (error === 'filetype') { %>文件格式不支持，仅允许 JPEG/PNG/WebP。<%; } %>
+                            <% if (error === 'filesize') { %>文件过大，请上传不超过 10MB 的图片。<%; } %>
+                            <% if (error === 'upload_failed') { %>图片上传失败，请稍后重试。<%; } %>
+                            <% if (error === 'unauthorized') { %>请先登录后再上传。<%; } %>
+                        </div>
+                        <% } %>
+
+                        <form action="/virtual-tryon/upload" method="POST" enctype="multipart/form-data" id="upload-form">
+                            <div class="upload-zone" id="upload-zone" style="padding: 2rem; cursor: pointer;">
+                                <input type="file" id="photo-upload" name="photo" accept="image/jpeg,image/png,image/jpg,image/webp" style="display: none;">
+                                <i class="fas fa-camera" style="font-size: 2rem;"></i>
+                                <p style="margin: 1rem 0;">点击上传全身照</p>
+                            </div>
+                            <div id="file-preview" style="display: none; margin: 1rem 0; text-align: center;">
+                                <img id="preview-image" src="" alt="Preview" style="max-height: 150px; border: 1px solid var(--accent-gold);">
+                            </div>
+                            <div id="upload-progress-container" style="display: none; margin-top: 1rem;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #aaa; margin-bottom: 0.3rem;">
+                                    <span>上传进度</span>
+                                    <span id="upload-percent">0%</span>
+                                </div>
+                                <div style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;">
+                                    <div id="upload-bar" style="height: 100%; width: 0%; background: var(--accent-gold); transition: width 0.2s;"></div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+                            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+                                <i class="fas fa-upload"></i> 开始建模
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- 试穿选项卡片（示例） -->
+                    <div class="login-card" style="padding: 2rem; max-width: 100%;">
+                        <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">2. 选择试穿</h3>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="background: rgba(255,255,255,0.05); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h4 style="font-size: 1rem;">商务衬衫</h4>
+                                    <span style="font-size: 0.8rem; color: rgba(240,240,240,0.5);">白色 / 上装</span>
+                                </div>
+                                <button class="btn btn-secondary" style="padding: 0.5rem;"><i class="fas fa-plus"></i></button>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.05); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h4 style="font-size: 1rem;">西装外套</h4>
+                                    <span style="font-size: 0.8rem; color: rgba(240,240,240,0.5);">深蓝 / 外套</span>
+                                </div>
+                                <button class="btn btn-secondary" style="padding: 0.5rem;"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：3D预览区域 -->
+                <div class="tryon-panel">
+                    <div class="panel-header">
+                        <h3 style="color: var(--accent-gold);">3D 预览</h3>
+                        <div class="control-buttons">
+                            <button class="btn btn-secondary btn-sm" id="rotate-model"><i class="fas fa-sync"></i></button>
+                            <button class="btn btn-secondary btn-sm" id="reset-model"><i class="fas fa-redo"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- 预览容器：包含建模动画和GIF，根据状态切换显示 -->
+                    <div id="preview-container" style="width: 100%; height: 400px; background: #1a1a2e; border-radius: 8px; position: relative; overflow: hidden;">
+                        <!-- 建模动画（默认隐藏） -->
+                        <div id="modeling-animation" style="display: none; width: 100%; height: 100%; flex-direction: column; justify-content: center; align-items: center; background: #1a1a2e;">
+                            <i class="fas fa-cog fa-spin" style="font-size: 3rem; color: var(--accent-gold); margin-bottom: 1rem;"></i>
+                            <div style="color: white; font-size: 1.2rem; margin-bottom: 1rem;">正在生成3D模型，请稍候...</div>
+                            <div style="width: 60%; background: #333; height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div id="progress-bar" style="width: 0%; height: 100%; background: var(--accent-gold); transition: width 0.3s;"></div>
+                            </div>
+                            <div id="progress-percent" style="color: #aaa; margin-top: 0.5rem;">0%</div>
+                        </div>
+                        
+                        <!-- GIF展示（默认隐藏） -->
+                        <img id="demo-gif" src="/demo.gif" alt="3D Preview" style="display: none; width: 100%; height: 100%; object-fit: contain;">
+                        
+                        <!-- 初始占位（无参数时显示） -->
+                        <div id="placeholder" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; color: #aaa; flex-direction: column;">
+                            <i class="fas fa-arrow-up" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                            <p>上传照片后，这里将显示3D预览</p>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block save-button" disabled>
+                        <i class="fas fa-save"></i> 保存搭配效果（演示）
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="/js/artistic-animations.js"></script>
+    <script src="/js/main.js"></script>
+    
+    <!-- 页面内联脚本：处理上传点击、文件预览、模拟建模 -->
+    <script>
+        (function() {
+            // ---------- 上传区域点击 ----------
+            const uploadZone = document.getElementById('upload-zone');
+            const fileInput = document.getElementById('photo-upload');
+            if (uploadZone && fileInput) {
+                uploadZone.addEventListener('click', function() {
+                    fileInput.click();
+                });
+            }
+
+            // ---------- 文件选择预览 ----------
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const previewImg = document.getElementById('preview-image');
+                        previewImg.src = event.target.result;
+                        document.getElementById('file-preview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // ---------- 表单提交时模拟上传进度 ----------
+            const uploadForm = document.getElementById('upload-form');
+            uploadForm.addEventListener('submit', function(e) {
+                if (!fileInput.files.length) {
+                    alert('请先选择一张照片');
+                    e.preventDefault();
+                    return;
+                }
+                // 显示进度条
+                const progressContainer = document.getElementById('upload-progress-container');
+                const progressBar = document.getElementById('upload-bar');
+                const progressPercent = document.getElementById('upload-percent');
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '0%';
+                progressPercent.textContent = '0%';
+
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 90) {
+                        clearInterval(interval);
+                    } else {
+                        width += 10;
+                        progressBar.style.width = width + '%';
+                        progressPercent.textContent = width + '%';
+                    }
+                }, 200);
+                // 表单实际提交会刷新页面，所以进度条可能看不到最终效果，但给用户一个反馈
+            });
+
+            // ---------- 处理 URL 参数，模拟建模过程 ----------
+            const urlParams = new URLSearchParams(window.location.search);
+            const uploaded = urlParams.get('uploaded');  // 上传成功后的参数为 'success'
+            
+            const placeholder = document.getElementById('placeholder');
+            const modelingAnim = document.getElementById('modeling-animation');
+            const gifImg = document.getElementById('demo-gif');
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+
+            // 初始状态：显示占位，隐藏其他
+            if (placeholder) placeholder.style.display = 'flex';
+            if (modelingAnim) modelingAnim.style.display = 'none';
+            if (gifImg) gifImg.style.display = 'none';
+
+            if (uploaded === 'success') {
+                // 上传成功，显示建模动画，隐藏占位
+                placeholder.style.display = 'none';
+                modelingAnim.style.display = 'flex';
+                
+                // 模拟进度增长
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 10 + 5;
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(interval);
+                        // 进度满后，隐藏动画，显示GIF
+                        setTimeout(() => {
+                            modelingAnim.style.display = 'none';
+                            gifImg.style.display = 'block';
+                        }, 500);
+                    }
+                    progressBar.style.width = progress + '%';
+                    progressPercent.textContent = Math.floor(progress) + '%';
+                }, 400); // 约 3-4 秒完成
+            }
+        })();
+    </script>
+</body>
+</html>

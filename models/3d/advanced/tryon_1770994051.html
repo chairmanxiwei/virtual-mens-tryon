@@ -1,0 +1,284 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>高级3D试穿预览</title>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+            <style>
+                body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
+                #container { width: 100%; height: 100vh; }
+                .controls { position: absolute; top: 10px; left: 10px; color: white; background: rgba(0,0,0,0.7); padding: 15px; border-radius: 8px; max-width: 250px; }
+                .controls h3 { margin: 0 0 10px 0; font-size: 16px; }
+                .controls p { margin: 5px 0; font-size: 12px; }
+                .status { position: absolute; bottom: 10px; right: 10px; color: white; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 5px; font-size: 12px; }
+            </style>
+        </head>
+        <body>
+            <div id="container"></div>
+            <div class="controls">
+                <h3>🎮 控制说明</h3>
+                <p>• 鼠标左键: 旋转模型</p>
+                <p>• 鼠标滚轮: 缩放视图</p>
+                <p>• 鼠标右键: 平移视图</p>
+                <p>• Shift+拖动: 快速平移</p>
+                <p>• 双击: 重置视图</p>
+            </div>
+            <div class="status">
+                <div>📊 高级3D建模</div>
+                <div>✨ 实时渲染</div>
+            </div>
+            <script>
+                // 场景设置
+                const scene = new THREE.Scene();
+                scene.background = new THREE.Color(0xf0f2f6);
+                
+                // 相机设置
+                const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.set(0, 120, 250);
+                camera.lookAt(0, 80, 0);
+                
+                // 渲染器
+                const renderer = new THREE.WebGLRenderer({antialias: true});
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.shadowMap.enabled = true;
+                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                document.getElementById('container').appendChild(renderer.domElement);
+                
+                // 控制器
+                const controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                controls.enablePan = true;
+                controls.maxPolarAngle = Math.PI * 0.8;
+                controls.minDistance = 100;
+                controls.maxDistance = 500;
+                
+                // 添加高级光源
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+                scene.add(ambientLight);
+                
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(2, 3, 2);
+                directionalLight.castShadow = true;
+                directionalLight.shadow.mapSize.width = 2048;
+                directionalLight.shadow.mapSize.height = 2048;
+                directionalLight.shadow.camera.near = 0.5;
+                directionalLight.shadow.camera.far = 1000;
+                directionalLight.shadow.camera.left = -100;
+                directionalLight.shadow.camera.right = 100;
+                directionalLight.shadow.camera.top = 100;
+                directionalLight.shadow.camera.bottom = -100;
+                scene.add(directionalLight);
+                
+                const pointLight1 = new THREE.PointLight(0xffffff, 0.4);
+                pointLight1.position.set(-5, 5, 3);
+                scene.add(pointLight1);
+                
+                const pointLight2 = new THREE.PointLight(0xffffff, 0.3);
+                pointLight2.position.set(5, 2, -3);
+                scene.add(pointLight2);
+                
+                // 创建地面
+                const groundGeometry = new THREE.PlaneGeometry(1000, 1000);
+                const groundMaterial = new THREE.MeshPhongMaterial({color: 0xe0e0e0, side: THREE.DoubleSide});
+                const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+                ground.rotation.x = Math.PI / 2;
+                ground.position.y = -50;
+                ground.receiveShadow = true;
+                scene.add(ground);
+                
+                // 创建环境
+                const gridHelper = new THREE.GridHelper(500, 20, 0x888888, 0x444444);
+                scene.add(gridHelper);
+                
+                // 创建人体模型组
+                const humanGroup = new THREE.Group();
+                humanGroup.position.y = 50;
+                scene.add(humanGroup);
+                
+                // 创建详细的人体模型
+                function createDetailedHumanModel() {
+                    const bodyGroup = new THREE.Group();
+                    
+                    // 头部 - 更详细的球体
+                    const headGeometry = new THREE.SphereGeometry(18, 64, 64);
+                    const headMaterial = new THREE.MeshPhongMaterial({color: 0xf4d0c1, shininess: 30});
+                    const head = new THREE.Mesh(headGeometry, headMaterial);
+                    head.position.y = 90;
+                    head.castShadow = true;
+                    bodyGroup.add(head);
+                    
+                    // 颈部
+                    const neckGeometry = new THREE.CylinderGeometry(8, 12, 12, 32);
+                    const neckMaterial = new THREE.MeshPhongMaterial({color: 0xf4d0c1, shininess: 20});
+                    const neck = new THREE.Mesh(neckGeometry, neckMaterial);
+                    neck.position.y = 75;
+                    neck.castShadow = true;
+                    bodyGroup.add(neck);
+                    
+                    // 躯干 - 使用圆柱体获得更好的形状
+                    const torsoGeometry = new THREE.CylinderGeometry(22, 28, 50, 32);
+                    const torsoMaterial = new THREE.MeshPhongMaterial({color: 0xf4d0c1, shininess: 20});
+                    const torso = new THREE.Mesh(torsoGeometry, torsoMaterial);
+                    torso.position.y = 45;
+                    torso.castShadow = true;
+                    bodyGroup.add(torso);
+                    
+                    // 手臂 - 更详细的设计
+                    const armGeometry = new THREE.CylinderGeometry(6, 4, 45, 24);
+                    const armMaterial = new THREE.MeshPhongMaterial({color: 0xf4d0c1, shininess: 20});
+                    
+                    // 左臂
+                    const leftArm = new THREE.Mesh(armGeometry, armMaterial);
+                    leftArm.position.set(-30, 65, 0);
+                    leftArm.rotation.z = Math.PI / 6;
+                    leftArm.castShadow = true;
+                    bodyGroup.add(leftArm);
+                    
+                    // 右臂
+                    const rightArm = new THREE.Mesh(armGeometry, armMaterial);
+                    rightArm.position.set(30, 65, 0);
+                    rightArm.rotation.z = -Math.PI / 6;
+                    rightArm.castShadow = true;
+                    bodyGroup.add(rightArm);
+                    
+                    // 腿部 - 更详细的设计
+                    const legGeometry = new THREE.CylinderGeometry(12, 8, 65, 24);
+                    const legMaterial = new THREE.MeshPhongMaterial({color: 0x34495e, shininess: 10});
+                    
+                    // 左腿
+                    const leftLeg = new THREE.Mesh(legGeometry, legMaterial);
+                    leftLeg.position.set(-12, -10, 0);
+                    leftLeg.castShadow = true;
+                    bodyGroup.add(leftLeg);
+                    
+                    // 右腿
+                    const rightLeg = new THREE.Mesh(legGeometry, legMaterial);
+                    rightLeg.position.set(12, -10, 0);
+                    rightLeg.castShadow = true;
+                    bodyGroup.add(rightLeg);
+                    
+                    return bodyGroup;
+                }
+                
+                // 创建详细的服装模型
+                function createDetailedClothing() {
+                    const clothingGroup = new THREE.Group();
+                    
+                    // 上衣 - 更详细的设计
+                    const shirtGeometry = new THREE.CylinderGeometry(26, 32, 60, 32);
+                    const shirtMaterial = new THREE.MeshPhongMaterial({
+                        color: 0x3498db,
+                        transparent: true,
+                        opacity: 0.9,
+                        shininess: 40,
+                        side: THREE.DoubleSide
+                    });
+                    const shirt = new THREE.Mesh(shirtGeometry, shirtMaterial);
+                    shirt.position.y = 45;
+                    shirt.castShadow = true;
+                    clothingGroup.add(shirt);
+                    
+                    // 衣领
+                    const collarGeometry = new THREE.TorusGeometry(12, 2, 16, 100, Math.PI);
+                    const collarMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, shininess: 50});
+                    const collar = new THREE.Mesh(collarGeometry, collarMaterial);
+                    collar.position.y = 78;
+                    collar.rotation.x = Math.PI / 2;
+                    collar.castShadow = true;
+                    clothingGroup.add(collar);
+                    
+                    // 袖子
+                    const sleeveGeometry = new THREE.CylinderGeometry(8, 6, 50, 24);
+                    
+                    // 左袖子
+                    const leftSleeve = new THREE.Mesh(sleeveGeometry, shirtMaterial);
+                    leftSleeve.position.set(-30, 65, 0);
+                    leftSleeve.rotation.z = Math.PI / 6;
+                    leftSleeve.castShadow = true;
+                    clothingGroup.add(leftSleeve);
+                    
+                    // 右袖子
+                    const rightSleeve = new THREE.Mesh(sleeveGeometry, shirtMaterial);
+                    rightSleeve.position.set(30, 65, 0);
+                    rightSleeve.rotation.z = -Math.PI / 6;
+                    rightSleeve.castShadow = true;
+                    clothingGroup.add(rightSleeve);
+                    
+                    // 裤子
+                    const pantsGeometry = new THREE.CylinderGeometry(14, 10, 70, 32);
+                    const pantsMaterial = new THREE.MeshPhongMaterial({
+                        color: 0x2c3e50,
+                        shininess: 15,
+                        side: THREE.DoubleSide
+                    });
+                    const pants = new THREE.Mesh(pantsGeometry, pantsMaterial);
+                    pants.position.y = -15;
+                    pants.castShadow = true;
+                    clothingGroup.add(pants);
+                    
+                    return clothingGroup;
+                }
+                
+                // 添加人体模型
+                const humanModel = createDetailedHumanModel();
+                humanGroup.add(humanModel);
+                
+                // 添加服装
+                const clothing = createDetailedClothing();
+                humanGroup.add(clothing);
+                
+                // 添加动画
+                let time = 0;
+                function animate() {
+                    requestAnimationFrame(animate);
+                    
+                    // 添加呼吸动画
+                    const breatheFactor = Math.sin(time * 0.005) * 0.02 + 1;
+                    humanGroup.scale.y = breatheFactor;
+                    humanGroup.scale.z = breatheFactor * 0.98;
+                    
+                    // 添加轻微的摆动
+                    humanGroup.rotation.y = Math.sin(time * 0.001) * 0.05;
+                    
+                    // 服装随身体摆动
+                    if (clothing) {
+                        clothing.rotation.y = humanGroup.rotation.y * 0.8;
+                    }
+                    
+                    time++;
+                    controls.update();
+                    renderer.render(scene, camera);
+                }
+                
+                // 初始化动画
+                animate();
+                
+                // 响应式调整
+                window.addEventListener('resize', function() {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+                
+                // 双击重置视图
+                window.addEventListener('dblclick', function() {
+                    camera.position.set(0, 120, 250);
+                    camera.lookAt(0, 80, 0);
+                    controls.reset();
+                });
+                
+                // 性能监控
+                console.log('🚀 高级3D建模场景已加载');
+                console.log('📊 场景统计:', {
+                    models: humanGroup.children.length,
+                    lights: scene.children.filter(child => child.isLight).length,
+                    objects: scene.children.length,
+                    shadows: renderer.shadowMap.enabled ? 'enabled' : 'disabled'
+                });
+            </script>
+        </body>
+        </html>
+        

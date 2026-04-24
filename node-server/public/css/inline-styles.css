@@ -1,0 +1,260 @@
+/* 内联样式迁移到外部CSS文件 */
+
+/* 虚拟试穿页面样式 */
+.tryon-panel {
+    position: relative;
+}
+
+.tryon-panel .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.tryon-panel .control-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tryon-panel .control-buttons button {
+    padding: 0.5rem;
+}
+
+#3d-container {
+    border: 1px solid rgba(240, 240, 240, 0.1);
+    width: 100%;
+    height: 520px;
+    background: #0b0b0b;
+}
+
+.tryon-panel .save-button {
+    margin-top: 1rem;
+}
+
+/* AI识别页面样式 */
+.camera-container {
+    position: relative;
+}
+
+.upload-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    border: 2px dashed rgba(240, 240, 240, 0.3);
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+.upload-zone:hover {
+    border-color: var(--accent-gold);
+}
+
+.upload-zone.dragover {
+    border-color: var(--accent-gold);
+}
+
+#uploaded-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+/* 404页面样式 */
+.error-message {
+    background: rgba(211, 47, 47, 0.2);
+    border: 1px solid #d32f2f;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: #ef9a9a;
+}
+
+.success-message {
+    background: rgba(46, 125, 50, 0.2);
+    border: 1px solid #2e7d32;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: #a5d6a7;
+}
+
+/* 加载状态样式 */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-content {
+    color: var(--accent-gold);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.loading-content i {
+    margin-right: 0.5rem;
+}
+
+.loading-subtext {
+    font-size: 1rem;
+    color: white;
+}
+
+/* 上传进度条样式 */
+#upload-progress-container {
+    margin-top: 1rem;
+}
+
+#upload-progress-container .progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-bottom: 0.3rem;
+}
+
+#upload-progress-container .progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+#upload-progress-container .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent-gold);
+    transition: width 0.2s;
+}
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid rgba(240, 240, 240, 0.3);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--accent-gold);
+    color: #0a0a0a;
+}
+
+.btn-primary:hover {
+    background: #d4af37;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--accent-gold);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* 卡片样式 */
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 网格布局 */
+.grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .grid-cols-2,
+    .grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    .tryon-panel .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .tryon-panel .control-buttons {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

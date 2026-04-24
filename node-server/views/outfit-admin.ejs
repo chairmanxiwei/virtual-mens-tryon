@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/renaissance-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid rgba(240,240,240,0.2); padding: 10px; text-align: left; }
+        th { background: rgba(255,255,255,0.05); }
+        .outfit-img { width: 80px; height: 80px; object-fit: cover; }
+        .edit-form { display: none; margin-top: 10px; }
+        .edit-form input, .edit-form textarea { width: 100%; margin-bottom: 5px; }
+        .add-form { margin-bottom: 20px; padding: 20px; border: 1px solid rgba(240,240,240,0.2); }
+    </style>
+</head>
+<body>
+    <nav class="nav-overlay">
+        <div class="brand">虚拟男装</div>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-item">首页</a>
+            <a href="/wardrobe" class="nav-item">衣橱</a>
+            <a href="/ai-outfit" class="nav-item">AI搭配</a>
+            <a href="/virtual-tryon" class="nav-item">虚拟试穿</a>
+            <a href="/admin/outfits" class="nav-item active">管理</a>
+            <a href="/logout" class="nav-item">登出</a>
+        </div>
+    </nav>
+
+    <section>
+        <div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+            <h1 style="color: var(--accent-gold); margin-bottom: 2rem;">搭配管理</h1>
+            <a href="/ai-outfit" class="btn btn-secondary btn-sm" style="margin-bottom: 2rem;">← 返回AI搭配页面</a>
+
+            <!-- 新增搭配按钮 -->
+            <button id="show-add-form" class="btn btn-primary" style="margin-bottom: 1rem;">+ 新增搭配</button>
+
+            <!-- 新增搭配表单（默认隐藏） -->
+            <div id="add-form-container" class="add-form" style="display: none;">
+                <h3>新增搭配</h3>
+                <form id="add-outfit-form">
+                    <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <input type="text" name="name" placeholder="名称" required>
+                        <input type="text" name="occasion" placeholder="场合">
+                        <input type="text" name="style" placeholder="风格">
+                        <input type="text" name="season" placeholder="季节" value="四季">
+                    </div>
+                    <textarea name="description" placeholder="描述" rows="2" style="width: 100%; margin: 10px 0;"></textarea>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('add-form-container').style.display='none'">取消</button>
+                </form>
+                <div id="add-message" style="margin-top: 10px;"></div>
+            </div>
+
+            <h3>所有搭配</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>图片</th>
+                        <th>名称</th>
+                        <th>描述</th>
+                        <th>场合</th>
+                        <th>风格</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% outfits.forEach(outfit => { %>
+                    <tr data-id="<%= outfit.id %>">
+                        <td><%= outfit.id %></td>
+                        <td><img src="<%= outfit.image || '/img/placeholder.svg' %>" class="outfit-img" alt="<%= outfit.name %>"></td>
+                        <td class="name"><%= outfit.name %></td>
+                        <td class="desc"><%= outfit.description %></td>
+                        <td class="occasion"><%= outfit.occasion %></td>
+                        <td class="style"><%= outfit.style %></td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" onclick='editOutfit(<%= outfit.id %>)'>编辑</button>
+                            <button class="btn btn-secondary btn-sm" onclick='uploadImage(<%= outfit.id %>)'>上传图片</button>
+                            <button class="btn btn-danger btn-sm" onclick='deleteOutfit(<%= outfit.id %>)'>删除</button>
+                        </td>
+                    </tr>
+                    <tr id="edit-<%= outfit.id %>" class="edit-form" style="display: none;">
+                        <td colspan="7">
+                            <form onsubmit='saveOutfit(event, <%= outfit.id %>)'>
+                                <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                                    <input type="text" name="name" placeholder="名称" value="<%= outfit.name %>" required>
+                                    <input type="text" name="occasion" placeholder="场合" value="<%= outfit.occasion %>">
+                                    <input type="text" name="style" placeholder="风格" value="<%= outfit.style %>">
+                                </div>
+                                <textarea name="description" placeholder="描述" rows="2" style="width: 100%; margin: 10px 0;"><%= outfit.description %></textarea>
+                                <button type="submit" class="btn btn-primary btn-sm">保存</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick='cancelEdit(<%= outfit.id %>)'>取消</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+
+            <div style="margin-top: 3rem; border-top: 1px solid rgba(240,240,240,0.2); padding-top: 2rem;">
+                <h3>快速上传图片（覆盖固定搭配）</h3>
+                <form id="upload-fixed-form" enctype="multipart/form-data">
+                    <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div>
+                            <label>商务精英</label>
+                            <input type="file" name="business" accept="image/*">
+                        </div>
+                        <div>
+                            <label>休闲聚会</label>
+                            <input type="file" name="casual" accept="image/*">
+                        </div>
+                        <div>
+                            <label>正式晚宴</label>
+                            <input type="file" name="formal" accept="image/*">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">上传固定图片</button>
+                </form>
+                <div id="message-fixed" style="margin-top: 1rem;"></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const csrfToken = '<%= csrfToken %>';
+
+        // 显示新增表单
+        document.getElementById('show-add-form').addEventListener('click', () => {
+            document.getElementById('add-form-container').style.display = 'block';
+        });
+
+        // 新增搭配提交
+        document.getElementById('add-outfit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const msgDiv = document.getElementById('add-message');
+            msgDiv.innerHTML = '<p>保存中...</p>';
+            try {
+                const res = await fetch('/admin/outfits/add', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+                const data = await res.json();
+                if (data.success) {
+                    msgDiv.innerHTML = '<p style="color: #4CAF50;">✅ 新增成功，页面刷新...</p>';
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    msgDiv.innerHTML = `<p style="color: #f44336;">❌ 失败：${data.error}</p>`;
+                }
+            } catch (err) {
+                msgDiv.innerHTML = '<p style="color: #f44336;">❌ 请求出错</p>';
+            }
+        });
+
+        // 上传固定图片
+        document.getElementById('upload-fixed-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const msgDiv = document.getElementById('message-fixed');
+            msgDiv.innerHTML = '<p>上传中...</p>';
+            try {
+                const res = await fetch('/admin/outfits/upload-fixed', { method: 'POST', credentials: 'include', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    msgDiv.innerHTML = '<p style="color: #4CAF50;">✅ 上传成功！刷新页面查看新图片。</p>';
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    msgDiv.innerHTML = `<p style="color: #f44336;">❌ 失败：${data.error}</p>`;
+                }
+            } catch (err) {
+                msgDiv.innerHTML = '<p style="color: #f44336;">❌ 请求出错</p>';
+            }
+        });
+
+        // 编辑按钮
+        function editOutfit(id) {
+            document.querySelectorAll('.edit-form').forEach(el => el.style.display = 'none');
+            document.getElementById('edit-' + id).style.display = 'table-row';
+        }
+
+        function cancelEdit(id) {
+            document.getElementById('edit-' + id).style.display = 'none';
+        }
+
+        async function saveOutfit(event, id) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            formData.append('id', id);
+            formData.append('csrfToken', csrfToken);
+
+            try {
+                const res = await fetch('/admin/outfits/update', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('更新失败：' + data.error);
+                }
+            } catch (err) {
+                alert('请求出错');
+            }
+        }
+
+        // 上传图片按钮：弹出文件选择器，自动上传
+        async function uploadImage(id) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async () => {
+                if (input.files.length === 0) return;
+                const file = input.files[0];
+                const formData = new FormData();
+                formData.append('outfitId', id);
+                formData.append('outfit_image', file);
+                formData.append('csrfToken', csrfToken);
+
+                try {
+                    const res = await fetch('/admin/outfits/upload-image', {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        alert('图片上传成功！');
+                        location.reload();
+                    } else {
+                        alert('上传失败：' + data.error);
+                    }
+                } catch (err) {
+                    alert('请求出错');
+                }
+            };
+            input.click();
+        }
+
+        async function deleteOutfit(id) {
+            if (!confirm('确定要删除这个搭配吗？')) return;
+            try {
+                const res = await fetch('/admin/outfits/delete', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, csrfToken })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('删除失败：' + data.error);
+                }
+            } catch (err) {
+                alert('请求出错');
+            }
+        }
+    </script>
+</body>
+</html>

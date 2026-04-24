@@ -1,0 +1,18 @@
+[Unit]
+Description=Virtual Man Fashion API Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/虚拟男装
+EnvironmentFile=/root/虚拟男装/.env.production
+ExecStart=/root/虚拟男装/current/.venv/bin/gunicorn server.src.api.main_v3:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 127.0.0.1:8000 --timeout 180 --access-logfile /root/虚拟男装/shared/logs/gunicorn-access.log --error-logfile /root/虚拟男装/shared/logs/gunicorn-error.log
+Restart=always
+RestartSec=5
+MemoryMax=1024M
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
